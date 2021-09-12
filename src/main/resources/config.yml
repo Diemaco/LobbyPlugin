@@ -1,0 +1,18 @@
+# How long it takes until the player is no longer tagged
+damageTimeout: 140
+# How much points the tagger should receive after the tagged player disconnects
+leaveBonus: 0.25
+# Prefix used for messages
+prefix: '&4&l[&c&lFFA&4&l]&r - '
+# Sent when a player falls into lava without being tagged
+playerFallMessage: '&aYou fell in lava!'
+# Sent when a player falls into lava whilst being tagged
+playerLoseMessage: '&a&l{player}&r&a knocked you into lava!'
+# Sent to the tagger when the tagged player falls into lava
+playerWinMessage: '&aYou knocked &l{player}&r&a into lava!'
+# Sent to the tagger when the tagged player leaves
+playerLeaveMessage: '{prefix}&a&l{player}&r&a left the game so you received {leave_bonus} points'
+# Sent when a command hasn't been used properly
+commandWrong: '{prefix}&cWrong usage!'
+# Sent to the player
+stat: '&4&lFFA-{stat}:{newline}&r'

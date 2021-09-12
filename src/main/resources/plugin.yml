@@ -1,0 +1,23 @@
+name: FFA
+version: 2.0
+api-version: 1.16
+main: com.gmail.mariodeu2.ffa.main
+commands:
+  ffa:
+    description: FFA command
+    usage: /ffa
+    permission: ffa.main
+    aliases: [freeforall]
+  stats:
+    description: Stats command
+    usage: /stats
+    permission: ffa.stats
+    aliases: [kills, deaths, killstreak]
+  points:
+    description: Points command
+    usage: /points
+    permission: ffa.points
+permissions:
+  lobby.inv:
+    description: Should the player be able to move items in his inv
+    default: false
