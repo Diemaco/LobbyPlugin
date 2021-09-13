@@ -21,7 +21,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,15 +31,36 @@ import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 @SuppressWarnings("ConstantConditions")
 public class GameEvents implements Listener {
 
-    JavaPlugin plugin = main.getPlugin(main.class);
+    final JavaPlugin plugin = main.getPlugin(main.class);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
 
+        // Create player settings if player settings haven't been created before
+        if (!Database.playerExists(player)) {
+            Database.createPlayerProfile(player);
+        }
+
+        // Clear inventory
         player.getInventory().clear();
 
+        // Set slot 8 to the compass menu item
+        player.getInventory().setItem(8, items.compassMenuItem);
+
+        // Enable 1.8 combat for player
+        player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(500.0);
+
+        // Set gamemode to the adventure mode
+        player.setGameMode(GameMode.ADVENTURE);
+
+        // Teleport to world spawn
+        player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
+
+        // Set join message
+        event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
+
+        // Give item depending on current game mode
         switch (currentMode) {
             case STICK:
                 player.getInventory().setItem(0, items.normalStick);
@@ -57,26 +77,10 @@ public class GameEvents implements Listener {
             default:
         }
 
-        player.getInventory().setItem(8, items.compassMenuItem);
+        // Deserialize the player's data and cache it
+        Database.cachedPlayerData.put(player, Database.PlayerData.deserialize(player));
 
-
-        Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_ATTACK_SPEED)).setBaseValue(500.0);
-        player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-        player.setGameMode(GameMode.ADVENTURE);
-
-        ArrayList<Object> list = new ArrayList<>();
-
-        list.add(0);                    // Kills
-        list.add(0);                    // Deaths
-        list.add(0);                    // Killstreak
-        list.add(0D);                   // Points (Double)
-
-        Database.stats.put(player, list);
-
-        if (!Database.playerExists(player)) {
-            Database.createPlayerProfile(player);
-        }
-
+        // Set the player's xp level to their killstreak
         player.setLevel(Database.getPlayerKillstreak(player));
     }
 
@@ -86,11 +90,11 @@ public class GameEvents implements Listener {
 
             for (Map.Entry<Player, attackedPlayer> set : playersAttacked.entrySet()) {
                 if(set.getValue().getAttacker().equals(event.getPlayer())) {
-                    ArrayList<Object> setPlayer = Database.stats.get(set.getKey());
+                    Database.PlayerData setPlayer = Database.cachedPlayerData.get(set.getKey());
 
-                    setPlayer.set(3, (double) setPlayer.get(3) + 0.25);
+                    setPlayer.points += 0.25;
 
-                    Database.stats.replace(set.getKey(), setPlayer);
+                    Database.cachedPlayerData.replace(set.getKey(), setPlayer);
                     set.getKey().sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
                 }
             }
@@ -103,18 +107,18 @@ public class GameEvents implements Listener {
 
 
             if (tagger.getWorld() == world) {
-                ArrayList<Object> setTagger = Database.stats.get(tagger);
+                Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
 
-                setTagger.set(3, (double) setTagger.get(3) + 0.25);
+                setTagger.points += 0.25;
 
-                Database.stats.replace(tagger, setTagger);
+                Database.cachedPlayerData.replace(tagger, setTagger);
                 tagger.sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
             }
 
             playersAttacked.remove(event.getPlayer());
         }
 
-        Database.updateAll(event.getPlayer());
+        Database.updateAllAndRemoveFromCache(event.getPlayer());
 
         event.setQuitMessage("");
     }
@@ -131,7 +135,7 @@ public class GameEvents implements Listener {
 
             playersAttacked.remove(event.getPlayer());
         }
-        Database.updateAll(event.getPlayer());
+        Database.updateAllAndRemoveFromCache(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -143,8 +147,7 @@ public class GameEvents implements Listener {
         if (!(
                 player instanceof Player &&
                 attacker instanceof Player &&
-                player.getWorld() == world) &&
-                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
             return;
         }
 
@@ -205,25 +208,25 @@ public class GameEvents implements Listener {
 
         Player player = event.getPlayer();
 
-        if (!(
-                player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) &&
-                player.getWorld() == world &&
-                (!event.getTo().getBlock().getType().equals(Material.LAVA)) || player.getFireTicks() != 0)) {
+        if ((
+                !player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) ||
+                !event.getTo().getBlock().getType().equals(Material.LAVA) ||
+                player.getFireTicks() == 0)) {
             return;
         }
-
 
         if (playersAttacked.containsKey(player)) {
             killPlayer(player, playersAttacked.get(player).getAttacker());
             player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
         } else {
             player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-            player.setFireTicks(0);
             player.sendActionBar(player_fall);
         }
+
+        player.setFireTicks(0);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    /*@EventHandler(priority = EventPriority.LOW)
     public void sniperUse(PlayerInteractEvent event) {
 
         Player player = event.getPlayer();
@@ -312,31 +315,30 @@ public class GameEvents implements Listener {
                 }
             }
         }
-    }
+    }*/
 
     public void killPlayer(Player player, Player tagger) {
 
-        ArrayList<Object> set = Database.stats.get(player);
-        set.set(1, (int) set.get(1) + 1);
-        set.set(2, 0);
-        // set.set(3, (double) set.get(3) + 1.0);
+        Database.PlayerData set = Database.cachedPlayerData.get(player);
+        set.deaths += 1;
+        set.killstreak = 0;
 
-        Database.stats.replace(player, set);
+        // Database.cachedPlayerData.replace(player, set);
 
-        Objects.requireNonNull(player.getPlayer()).setLevel(0);
+        player.getPlayer().setLevel(0);
 
         try {
             player.sendActionBar(player_lose.replace("{player}", tagger.getName()));
             if (tagger.getWorld() == world) {
-                ArrayList<Object> setTagger = Database.stats.get(tagger);
-                setTagger.set(0, (int) setTagger.get(0) + 1);
-                setTagger.set(2, (int) setTagger.get(2) + 1);
-                setTagger.set(3, (double) setTagger.get(3) + 1.0);
+                Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
+                setTagger.kills += 1;
+                setTagger.killstreak += 1;
+                setTagger.points += 1.0D;
 
-                Database.stats.replace(tagger, setTagger);
+                // Database.cachedPlayerData.replace(tagger, setTagger);
 
                 tagger.playSound(tagger.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 100, 1);
-                tagger.setLevel((int) setTagger.get(2));
+                tagger.setLevel(setTagger.killstreak);
                 tagger.sendActionBar(player_win.replace("{player}", player.getName()));
             }
         } catch (Exception e) {
@@ -365,7 +367,7 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        event.setCancelled(true);
+        event.setDamage(0);
     }
 
     public static class attackedPlayer {

@@ -19,8 +19,8 @@ public class Items {
     public final ItemStack compassMenuItem = new ItemStack(Material.COMPASS);
     public final Inventory serverMenu = Bukkit.createInventory(null, 27, ChatColor.GOLD + "" + ChatColor.BOLD + "Server menu");
     public final ItemStack shootie_shoot = new ItemStack(Material.DIAMOND_HOE);
-    public ItemStack normalStick = new ItemStack(Material.STICK, 1);
-    public ItemStack snowball = new ItemStack(Material.SNOWBALL, 16);
+    public final ItemStack normalStick = new ItemStack(Material.STICK, 1);
+    public final ItemStack snowball = new ItemStack(Material.SNOWBALL, 16);
 
     public Items() {
         ItemMeta itemMetaSurvival = survivalTP.getItemMeta();
@@ -67,8 +67,8 @@ public class Items {
 
 
         // this.serverMenu.setItem(11, this.pixelmonTP);
-        this.serverMenu.setItem(13, this.survivalTP);
-        this.serverMenu.setItem(15, this.creativeTP);
+        this.serverMenu.setItem(12, this.survivalTP);
+        this.serverMenu.setItem(14, this.creativeTP);
 
 
         ItemMeta itemMetaStick = this.normalStick.getItemMeta();
