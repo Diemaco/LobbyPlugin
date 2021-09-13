@@ -16,42 +16,28 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.projectiles.ProjectileSource;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.gmail.mariodeu2.ffa.config.*;
+import static com.gmail.mariodeu2.ffa.Settings.*;
 import static com.gmail.mariodeu2.ffa.main.*;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-public class gameHandler implements @NotNull Listener {
+@SuppressWarnings("ConstantConditions")
+public class GameEvents implements Listener {
 
-    // Plugin plugin = JavaPlugin.getPlugin(main.class);
+    JavaPlugin plugin = main.getPlugin(main.class);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
-        new BukkitRunnable() {
-            int counter = 30;
-
-            @Override
-            public void run() {
-                if (counter < 0) {
-                    this.cancel();
-                } else {
-                    counter--;
-                    // player.sendBlockChange(new Location(world, -4.5, 70, 6.5), Material.PINK_STAINED_GLASS.createBlockData());
-                }
-            }
-        }.runTaskTimer(config.plugin, 0L, 0L);
 
         player.getInventory().clear();
 
@@ -94,7 +80,6 @@ public class gameHandler implements @NotNull Listener {
         player.setLevel(Database.getPlayerKillstreak(player));
     }
 
-
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (playersAttacked.containsKey(event.getPlayer())) {
@@ -116,8 +101,6 @@ public class gameHandler implements @NotNull Listener {
                 playersAttacked.remove(event.getPlayer());
             }
 
-            assert tagger != null;
-            PersistentDataContainer dataTagger = tagger.getPersistentDataContainer();
 
             if (tagger.getWorld() == world) {
                 ArrayList<Object> setTagger = Database.stats.get(tagger);
@@ -157,13 +140,11 @@ public class gameHandler implements @NotNull Listener {
         Player player = (Player) event.getEntity();
         Player attacker = (Player) event.getDamager();
 
-
         if (!(
                 player instanceof Player &&
                 attacker instanceof Player &&
                 player.getWorld() == world) &&
-                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK &&
-                player.getLocation().getBlockY() <= 61) {
+                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
             return;
         }
 
@@ -227,7 +208,7 @@ public class gameHandler implements @NotNull Listener {
         if (!(
                 player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) &&
                 player.getWorld() == world &&
-                        (event.getTo().getBlock().getType().equals(Material.LAVA)) || player.getFireTicks() == 0)) {
+                (!event.getTo().getBlock().getType().equals(Material.LAVA)) || player.getFireTicks() != 0)) {
             return;
         }
 
@@ -236,7 +217,6 @@ public class gameHandler implements @NotNull Listener {
             killPlayer(player, playersAttacked.get(player).getAttacker());
             player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
         } else {
-            // player.sendBlockChange(new Location(world, -4.5, 70, 6.5), Material.PINK_STAINED_GLASS.createBlockData());
             player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
             player.setFireTicks(0);
             player.sendActionBar(player_fall);
@@ -246,18 +226,16 @@ public class gameHandler implements @NotNull Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void sniperUse(PlayerInteractEvent event) {
 
-        try {
-            if (!Objects.requireNonNull(event.getItem()).getType().equals(Material.DIAMOND_HOE)) {
-                return;
-            }
-        } catch (Exception e) {
-            return;
-        }
         Player player = event.getPlayer();
+        ItemStack item = event.getItem();
         Player playerHit;
 
+        if (item == null || item.getType().equals(Material.DIAMOND_HOE)) {
+            return;
+        }
 
         player.setCooldown(Material.DIAMOND_HOE, 15);
+
 
         Location eyeLocation = player.getEyeLocation();
 
@@ -337,7 +315,6 @@ public class gameHandler implements @NotNull Listener {
     }
 
     public void killPlayer(Player player, Player tagger) {
-        // player.sendBlockChange(new Location(world, -4.5, 70, 6.5), Material.PINK_STAINED_GLASS.createBlockData());
 
         ArrayList<Object> set = Database.stats.get(player);
         set.set(1, (int) set.get(1) + 1);
@@ -383,6 +360,11 @@ public class gameHandler implements @NotNull Listener {
             return;
         }
         event.getPlayer().setSneaking(false);
+        event.setCancelled(true);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamage(EntityDamageEvent event) {
         event.setCancelled(true);
     }
 

@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class config {
+public class Settings {
 
     static Plugin plugin = JavaPlugin.getPlugin(main.class);
 
@@ -30,7 +30,7 @@ public class config {
     public static String command_wrong = "{prefix}&cWrong usage!";
     public static String stat = "&4&lFFA-{stat}:{newline}&r";
 
-    public config() {
+    public Settings() {
 
     }
 

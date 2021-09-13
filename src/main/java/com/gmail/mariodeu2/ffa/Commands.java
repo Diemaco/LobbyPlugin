@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.mariodeu2.ffa.config.*;
+import static com.gmail.mariodeu2.ffa.Settings.*;
 import static com.gmail.mariodeu2.ffa.main.*;
 import static org.bukkit.Bukkit.getPlayerExact;
 

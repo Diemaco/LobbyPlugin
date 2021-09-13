@@ -3,7 +3,6 @@ package com.gmail.mariodeu2.ffa;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -12,18 +11,18 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-public class itemManager {
-    static Plugin plugin = config.plugin;
-    public final ItemStack survivalTP = new ItemStack(Material.DIAMOND_SWORD);
-    public final ItemStack creativeTP = new ItemStack(Material.GRASS_BLOCK);
-    // public final ItemStack pixelmonTP = new ItemStack(Material.REDSTONE_BLOCK);
+public class Items {
+    static Plugin plugin = Settings.plugin;
+    public final ItemStack survivalTP = new ItemStack(Material.GRASS_BLOCK);
+    public final ItemStack creativeTP = new ItemStack(Material.DIAMOND_BLOCK);
+
     public final ItemStack compassMenuItem = new ItemStack(Material.COMPASS);
     public final Inventory serverMenu = Bukkit.createInventory(null, 27, ChatColor.GOLD + "" + ChatColor.BOLD + "Server menu");
     public final ItemStack shootie_shoot = new ItemStack(Material.DIAMOND_HOE);
     public ItemStack normalStick = new ItemStack(Material.STICK, 1);
     public ItemStack snowball = new ItemStack(Material.SNOWBALL, 16);
 
-    public itemManager() {
+    public Items() {
         ItemMeta itemMetaSurvival = survivalTP.getItemMeta();
         List<String> lSurvival = new ArrayList<>();
 

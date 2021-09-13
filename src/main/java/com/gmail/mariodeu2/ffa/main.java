@@ -6,25 +6,22 @@ import com.gmail.filoghost.holographicdisplays.api.placeholder.PlaceholderReplac
  */
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 
 public class main extends JavaPlugin {
 
-    public static itemManager items;
+    public static Items items;
 
     public static ReentrantLock lock = new ReentrantLock();
-    public static HashMap<Player, gameHandler.attackedPlayer> playersAttacked = new HashMap<>();
+    public static HashMap<Player, GameEvents.attackedPlayer> playersAttacked = new HashMap<>();
 
 
     public static gameMode currentMode = gameMode.STICK;
@@ -43,8 +40,8 @@ public class main extends JavaPlugin {
             Bukkit.shutdown();
         }*/
 
-        config configuration = new config();
-        items = new itemManager();
+        Settings configuration = new Settings();
+        items = new Items();
         configuration.setupConfig();
         configuration.loadConfig();
 
@@ -63,8 +60,8 @@ public class main extends JavaPlugin {
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        getServer().getPluginManager().registerEvents(new InvManager(), this);
-        getServer().getPluginManager().registerEvents(new gameHandler(), this);
+        getServer().getPluginManager().registerEvents(new InvEvents(), this);
+        getServer().getPluginManager().registerEvents(new GameEvents(), this);
     }
 
     @Override
