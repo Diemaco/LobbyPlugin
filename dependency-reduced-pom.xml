@@ -10,13 +10,13 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <source>16</source>
+          <target>16</target>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.4</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -25,14 +25,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <relocations>
-            <relocation>
-              <pattern>io.github.leonardosnt.bungeechannelapi</pattern>
-              <shadedPattern>YOUR.PLUGIN.PACKAGE.libs.bungeechannelapi</shadedPattern>
-            </relocation>
-          </relocations>
-        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -52,48 +44,6 @@
       <artifactId>paper-api</artifactId>
       <version>1.16.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jsr305</artifactId>
-          <groupId>com.google.code.findbugs</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>json-simple</artifactId>
-          <groupId>com.googlecode.json-simple</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bungeecord-chat</artifactId>
-          <groupId>net.md-5</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>slf4j-api</artifactId>
-          <groupId>org.slf4j</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>asm</artifactId>
-          <groupId>org.ow2.asm</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>asm-commons</artifactId>
-          <groupId>org.ow2.asm</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>fr.xephi</groupId>
@@ -102,4 +52,8 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <properties>
+    <java.version>1.16</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
