@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -22,7 +23,6 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.Map;
-import java.util.Objects;
 
 import static com.gmail.mariodeu2.ffa.Settings.*;
 import static com.gmail.mariodeu2.ffa.main.*;
@@ -146,8 +146,8 @@ public class GameEvents implements Listener {
 
         if (!(
                 player instanceof Player &&
-                attacker instanceof Player &&
-                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+                        attacker instanceof Player &&
+                        event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
             return;
         }
 
@@ -195,7 +195,7 @@ public class GameEvents implements Listener {
         ProjectileSource shooter = event.getEntity().getShooter();
         Entity hitEntity = event.getHitEntity();
 
-        if (snowball instanceof Snowball && hitEntity instanceof Player && hitEntity.getLocation().getBlockY() < 62 && shooter instanceof Player) {
+        if (snowball instanceof Snowball && hitEntity instanceof Player && shooter instanceof Player) {
             if (!shooter.equals(hitEntity)) {
                 ((Player) event.getHitEntity()).damage(1, (Player) event.getEntity().getShooter());
                 ((Player) event.getHitEntity()).setHealth(20);
@@ -210,44 +210,31 @@ public class GameEvents implements Listener {
 
         if ((
                 !player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) ||
-                !event.getTo().getBlock().getType().equals(Material.LAVA) ||
-                player.getFireTicks() == 0)) {
+                        !event.getTo().getBlock().getType().equals(Material.LAVA) ||
+                        player.getFireTicks() == 0)) {
             return;
         }
 
-        if (playersAttacked.containsKey(player)) {
-            killPlayer(player, playersAttacked.get(player).getAttacker());
-            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-        } else {
-            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-            player.sendActionBar(player_fall);
-        }
-
-        player.setFireTicks(0);
+        killIfTagged(player);
     }
 
-    /*@EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.LOW)
     public void sniperUse(PlayerInteractEvent event) {
-
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
         Player playerHit;
 
-        if (item == null || item.getType().equals(Material.DIAMOND_HOE)) {
+        if (item == null || !item.getType().equals(Material.DIAMOND_HOE)) {
             return;
         }
 
         player.setCooldown(Material.DIAMOND_HOE, 15);
-
-
         Location eyeLocation = player.getEyeLocation();
-
         RayTraceResult result = player.getWorld().rayTraceEntities(eyeLocation, eyeLocation.getDirection(), 1000, 0.0, entity -> entity instanceof Player && !entity.getName().equals(player.getName()));
 
         double x1 = eyeLocation.getX();
         double y1 = eyeLocation.getY();
         double z1 = eyeLocation.getZ();
-
         double x2;
         double y2;
         double z2;
@@ -261,25 +248,20 @@ public class GameEvents implements Listener {
             x2 = HitPosition.getX();
             y2 = HitPosition.getY();
             z2 = HitPosition.getZ();
-
         } else {
             playerHit = (Player) result.getHitEntity();
             assert playerHit != null;
             eyeLocation = playerHit.getEyeLocation();
-
             x2 = eyeLocation.getX();
             y2 = eyeLocation.getY();
             z2 = eyeLocation.getZ();
-            if (!(player.getEyeLocation().getBlockY() >= 60 && eyeLocation.getY() <= 60) || !(player.getEyeLocation().getBlockY() <= 60 && eyeLocation.getY() >= 60)) {
-                killPlayer(playerHit, player);
-                playerHit.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-            }
+
+            killPlayer(playerHit, player);
+            playerHit.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
         }
 
         double distance = Math.pow(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2) + Math.pow((z2 - z1), 2), 0.5);
-
         Location location = player.getEyeLocation();
-
         Vector dir = location.getDirection();
 
         for (int i = 0; i < distance * 10; i++) {
@@ -287,63 +269,74 @@ public class GameEvents implements Listener {
             dir.multiply(0.1);
             location.add(dir);
 
-            if (player.getEyeLocation().getBlockY() >= 60) {
-                if (location.getY() <= 60) {
-                    ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
-
-                    particle.allPlayers();
-                    particle.count(0);
-                    particle.force(true);
-                    particle.location(location.set(location.getX(), 60D, location.getZ()));
-                    particle.offset(0.0, 0.0, 0.0);
-                    particle.spawn();
-
-                    break;
-                }
-            } else if (player.getEyeLocation().getBlockY() <= 60) {
-                if (location.getY() >= 60) {
-                    ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
-
-                    particle.allPlayers();
-                    particle.count(0);
-                    particle.force(true);
-                    particle.location(location.set(location.getX(), 60D, location.getZ()));
-                    particle.offset(0.0, 0.0, 0.0);
-                    particle.spawn();
-
-                    break;
-                }
-            }
+            ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
+            particle.allPlayers();
+            particle.count(0);
+            particle.force(true);
+            particle.location(location.set(location.getX(), 60D, location.getZ()));
+            particle.offset(0.0, 0.0, 0.0);
+            particle.spawn();
         }
-    }*/
+    }
+
+    public void killIfTagged(Player player) {
+        if (playersAttacked.containsKey(player)) {
+            killPlayer(player, playersAttacked.get(player).getAttacker());
+        } else {
+            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
+            player.sendActionBar(player_fall);
+        }
+    }
 
     public void killPlayer(Player player, Player tagger) {
 
-        Database.PlayerData set = Database.cachedPlayerData.get(player);
-        set.deaths += 1;
-        set.killstreak = 0;
+        //  Teleport to lobby spawn
+        player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
 
-        // Database.cachedPlayerData.replace(player, set);
+        // Extinguish player if needed
+        player.setFireTicks(0);
 
-        player.getPlayer().setLevel(0);
+        // Get the cached playerdata
+        Database.PlayerData cachedData = Database.cachedPlayerData.get(player);
 
-        try {
-            player.sendActionBar(player_lose.replace("{player}", tagger.getName()));
-            if (tagger.getWorld() == world) {
-                Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
-                setTagger.kills += 1;
-                setTagger.killstreak += 1;
-                setTagger.points += 1.0D;
+        // Increase the player's deaths
+        cachedData.deaths += 1;
 
-                // Database.cachedPlayerData.replace(tagger, setTagger);
+        // Set the player's killstreak to 0
+        cachedData.killstreak = 0;
 
-                tagger.playSound(tagger.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 100, 1);
-                tagger.setLevel(setTagger.killstreak);
-                tagger.sendActionBar(player_win.replace("{player}", player.getName()));
-            }
-        } catch (Exception e) {
-            Bukkit.getLogger().severe(e.toString());
+        // Set the player's xp bar to the cached killstreak (0 because he died)
+        player.getPlayer().setLevel(cachedData.killstreak);
+
+        // Send the player lose message to the player's actionbar
+        player.sendActionBar(player_lose.replace("{player}", tagger.getName()));
+
+        // If the player is online change his stats
+        if(tagger.isOnline() && Database.cachedPlayerData.containsKey(tagger)) {
+
+            // Get the cached playerdata
+            Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
+
+            // Increase the tagger's kills by 1
+            setTagger.kills += 1;
+
+            // Increase the tagger's killstreak by 1
+            setTagger.killstreak += 1;
+
+            // Increase the tagger's points by 1
+            setTagger.points += 1.0D;
+
+            // Play the sound
+            tagger.playSound(tagger.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 100, 1);
+
+            // Set the taggers xp bar level to the taggers killstreak
+            tagger.setLevel(setTagger.killstreak);
+
+            // Send the player win message to the
+            tagger.sendActionBar(player_win.replace("{player}", player.getName()));
         }
+
+        // Remove the player from the attacked players list
         playersAttacked.remove(player);
     }
 
@@ -358,16 +351,24 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-        if (!event.isSneaking()) {
+        /*if (!event.isSneaking()) {
             return;
-        }
+        }*/
         event.getPlayer().setSneaking(false);
-        event.setCancelled(true);
+        // event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        event.setDamage(0);
+        if (
+                event.getEntityType() != EntityType.PLAYER
+                || event.getCause() != EntityDamageEvent.DamageCause.FIRE
+                || event.getCause() != EntityDamageEvent.DamageCause.FIRE_TICK
+                || event.getCause() != EntityDamageEvent.DamageCause.LAVA) {
+            return;
+        }
+
+        killIfTagged((Player)event.getEntity());
     }
 
     public static class attackedPlayer {
@@ -405,10 +406,6 @@ public class GameEvents implements Listener {
 
         public void stop() {
             Bukkit.getScheduler().cancelTask(id);
-        }
-
-        public Player getPlayer() {
-            return player;
         }
 
         public Player getAttacker() {

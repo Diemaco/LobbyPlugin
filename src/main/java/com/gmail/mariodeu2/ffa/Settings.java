@@ -1,6 +1,9 @@
 package com.gmail.mariodeu2.ffa;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,11 +12,6 @@ public class Settings {
 
     static final Plugin plugin = JavaPlugin.getPlugin(main.class);
 
-    public static NamespacedKey NSKVersion = new NamespacedKey(plugin, "FFA-VERSION");
-    public static NamespacedKey NSKKillstreak = new NamespacedKey(plugin, "FFA-killstreak");
-    public static NamespacedKey NSKKills = new NamespacedKey(plugin, "FFA-kills");
-    public static NamespacedKey NSKDeaths = new NamespacedKey(plugin, "FFA-deaths");
-    public static NamespacedKey NSKPoints = new NamespacedKey(plugin, "FFA-points");
     public static final World world = Bukkit.getWorld("world");
     public static final Location lobbySpawnLocation = new Location(world, 27.5, 108, -25, 180, 45);
 

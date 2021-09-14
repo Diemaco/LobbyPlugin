@@ -1,8 +1,6 @@
 package com.gmail.mariodeu2.ffa;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.util.HashMap;
@@ -10,7 +8,6 @@ import java.util.HashMap;
 public class Database {
 
     public static final HashMap<Player, PlayerData> cachedPlayerData = new HashMap<>();
-    private static final Plugin plugin = JavaPlugin.getPlugin(main.class);
 
     public static int getPlayerKills(Player player) {
         return Database.cachedPlayerData.get(player).kills;
@@ -75,7 +72,7 @@ public class Database {
         }
 
         public static PlayerData deserialize(Player player) {
-            ObjectInputStream objectinputstream = null;
+            ObjectInputStream objectinputstream;
             try {
                 FileInputStream streamIn = new FileInputStream("D:\\newservers\\lobby\\playerData\\" + player.getUniqueId() + ".txt");
                 objectinputstream = new ObjectInputStream(streamIn);

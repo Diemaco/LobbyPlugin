@@ -19,7 +19,3 @@ commands:
     description: Points command
     usage: /points
     permission: ffa.points
-permissions:
-  lobby.inv:
-    description: Should the player be able to move items in his inv
-    default: false

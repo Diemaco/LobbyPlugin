@@ -6,13 +6,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Items {
-    static Plugin plugin = Settings.plugin;
     public final ItemStack survivalTP = new ItemStack(Material.GRASS_BLOCK);
     public final ItemStack creativeTP = new ItemStack(Material.DIAMOND_BLOCK);
 
@@ -115,22 +113,11 @@ public class Items {
         this.serverMenu.setItem(13, this.survivalTP);
         this.serverMenu.setItem(15, this.creativeTP);
         /*
-        ItemStack pixelmon = serverMenu.getItem(11);
-
-        List<String> pixelmonLore = pixelmon.getLore();
-        pixelmonLore.set(2, ChatColor.translateAlternateColorCodes('&', String.format("&4&lPlayers online: ", new BungeeChannelApi(plugin).getPlayerCount("survival").join())));
-
-        pixelmon.setLore(pixelmonLore);
-        serverMenu.setItem(11, pixelmon);
-
-
-
         ItemStack survival = serverMenu.getItem(13);
         List<String> survivalLore = survival.getLore();
         survivalLore.set(2, ChatColor.translateAlternateColorCodes('&', String.format("&2&lPlayers online: ", new BungeeChannelApi(plugin).getPlayerCount("survival").join())));
         survival.setLore(survivalLore);
         serverMenu.setItem(13, survival);
-
 
 
         ItemStack creative = serverMenu.getItem(15);
