@@ -31,7 +31,7 @@ import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 @SuppressWarnings("ConstantConditions")
 public class GameEvents implements Listener {
 
-    final JavaPlugin plugin = Main.getPlugin(Main.class);
+    private final JavaPlugin plugin = Main.getPlugin(Main.class);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -46,7 +46,7 @@ public class GameEvents implements Listener {
         player.getInventory().clear();
 
         // Set slot 8 to the compass menu item
-        player.getInventory().setItem(8, itemCreator.compassMenuItem);
+        player.getInventory().setItem(8, itemCreator.compassMenuOpenItem);
 
         // Enable 1.8 combat for player
         player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(500.0);
@@ -62,19 +62,10 @@ public class GameEvents implements Listener {
 
         // Give item depending on current game mode
         switch (currentMode) {
-            case STICK:
-                player.getInventory().setItem(0, itemCreator.normalStick);
-                break;
-            case NOSTICKS:
-                player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
-                break;
-            case SNOWBALL:
-                player.getInventory().setItem(0, itemCreator.snowball);
-                break;
-            case SHOOTIE_SHOOT:
-                player.getInventory().setItem(0, itemCreator.shootie_shoot);
-                break;
-            default:
+            case STICK -> player.getInventory().setItem(0, itemCreator.normalStick);
+            case NOSTICKS -> player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
+            case SNOWBALL -> player.getInventory().setItem(0, itemCreator.snowball);
+            case SHOOTIE_SHOOT -> player.getInventory().setItem(0, itemCreator.shootie_shoot);
         }
 
         // Deserialize the player's data and cache it
@@ -118,7 +109,7 @@ public class GameEvents implements Listener {
             playersAttacked.remove(event.getPlayer());
         }
 
-        PlayerDataStorage.updateAllAndRemoveFromCache(event.getPlayer());
+        PlayerDataStorage.saveAndClear(event.getPlayer());
 
         event.setQuitMessage("");
     }
@@ -135,7 +126,7 @@ public class GameEvents implements Listener {
 
             playersAttacked.remove(event.getPlayer());
         }
-        PlayerDataStorage.updateAllAndRemoveFromCache(event.getPlayer());
+        PlayerDataStorage.saveAndClear(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

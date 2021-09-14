@@ -34,27 +34,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command command, @NotNull String s, @NotNull String[] strings) {
-
-        for (CommandInterface cmd :
-                registeredCommands) {
-            if (cmd.getName() == command.getName()) {
-                return cmd.execute(commandSender, s, strings);
-            }
-        }
-
-        return false;
+        return registeredCommands.stream().filter(cmd -> cmd.getName() == command.getName()).findFirst().filter(cmd -> cmd.execute(commandSender, s, strings)).isPresent();
     }
 
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command command, @NotNull String s, @NotNull String[] strings) {
-        for (CommandInterface cmd :
-                registeredCommands) {
-            if (cmd.getName() == command.getName()) {
-                return cmd.tabComplete(commandSender, s, strings);
-            }
-        }
-
-        return null;
+        return registeredCommands.stream().filter(cmd -> cmd.getName() == command.getName()).findFirst().map(cmd -> cmd.tabComplete(commandSender, s, strings)).orElse(null);
     }
 }

@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import static com.gmail.mariodeu2.ffa.Main.currentMode;
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
@@ -90,5 +92,15 @@ public class Util {
                 }
                 break;
         }
+    }
+
+    public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {
+        ItemStack itemStack = new ItemStack(material, amount);
+
+        itemStack.getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+
+        itemStack.getItemMeta().setLore(Arrays.stream(lore).map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
+
+        return itemStack;
     }
 }

@@ -25,7 +25,7 @@ public class PlayerDataStorage {
         return PlayerDataStorage.cachedPlayerData.get(player).points;
     }
 
-    public static void updateAllAndRemoveFromCache(Player player) {
+    public static void saveAndClear(Player player) {
         cachedPlayerData.get(player).serialize(player);
         cachedPlayerData.remove(player);
     }

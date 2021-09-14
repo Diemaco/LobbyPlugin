@@ -31,7 +31,7 @@ public class InventoryEvents implements Listener {
             event.setResult(Event.Result.DENY);
         }
 
-        if (!event.getInventory().contains(itemCreator.survivalTP)) return;
+        if (!event.getInventory().contains(itemCreator.survivalMenuItem)) return;
 
 
         if (Main.playersAttacked.containsKey(player)) {

@@ -49,7 +49,7 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerDataStorage.updateAllAndRemoveFromCache(player);
+            PlayerDataStorage.saveAndClear(player);
         }
     }
 
