@@ -7,15 +7,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Settings {
 
-    static Plugin plugin = JavaPlugin.getPlugin(main.class);
+    static final Plugin plugin = JavaPlugin.getPlugin(main.class);
 
     public static NamespacedKey NSKVersion = new NamespacedKey(plugin, "FFA-VERSION");
     public static NamespacedKey NSKKillstreak = new NamespacedKey(plugin, "FFA-killstreak");
     public static NamespacedKey NSKKills = new NamespacedKey(plugin, "FFA-kills");
     public static NamespacedKey NSKDeaths = new NamespacedKey(plugin, "FFA-deaths");
     public static NamespacedKey NSKPoints = new NamespacedKey(plugin, "FFA-points");
-    public static World world = Bukkit.getWorld("world");
-    public static Location lobbySpawnLocation = new Location(world, 27.5, 108, -25, 180, 45);
+    public static final World world = Bukkit.getWorld("world");
+    public static final Location lobbySpawnLocation = new Location(world, 27.5, 108, -25, 180, 45);
 
     //////////////
     // Defaults //

@@ -20,8 +20,8 @@ public class main extends JavaPlugin {
 
     public static Items items;
 
-    public static ReentrantLock lock = new ReentrantLock();
-    public static HashMap<Player, GameEvents.attackedPlayer> playersAttacked = new HashMap<>();
+    public static final ReentrantLock lock = new ReentrantLock();
+    public static final HashMap<Player, GameEvents.attackedPlayer> playersAttacked = new HashMap<>();
 
 
     public static gameMode currentMode = gameMode.STICK;
@@ -67,7 +67,7 @@ public class main extends JavaPlugin {
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Database.updateAll(player);
+            Database.updateAllAndRemoveFromCache(player);
         }
         try {
             if (!connection.getAutoCommit()) {

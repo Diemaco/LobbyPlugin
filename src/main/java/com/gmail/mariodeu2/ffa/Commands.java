@@ -2,6 +2,7 @@ package com.gmail.mariodeu2.ffa;
 
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -149,32 +150,26 @@ public class Commands implements @Nullable CommandExecutor, @NotNull Listener, @
             return true;
         }
 
-        /*
-        if (command.getName().equalsIgnoreCase("stats")) {
-            PersistentDataContainer data = player.getPersistentDataContainer();
 
-            Integer killstreak = data.get(NSKKillstreak, PersistentDataType.INTEGER);
-            Integer kills = data.get(NSKKills, PersistentDataType.INTEGER);
-            Integer deaths = data.get(NSKDeaths, PersistentDataType.INTEGER);
+        if (command.getName().equalsIgnoreCase("stats")) {
+            int killstreak = Database.getPlayerKills(player);
+            int kills = Database.getPlayerKills(player);
+            int deaths = Database.getPlayerDeaths(player);
 
             player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "---------|" + ChatColor.DARK_RED + " FFA Stats " + ChatColor.RED + "|---------");
             player.sendMessage(statsPrefix("kills") + "   - " + kills);
             player.sendMessage(statsPrefix("deaths") + "   - " + deaths);
             player.sendMessage(statsPrefix("killstreak") + "   - " + killstreak);
-            player.sendMessage(statsPrefix("K/D Ratio") + "   - " + (double) Math.round(kills.floatValue() / deaths.floatValue() * 100) / 100);
+            player.sendMessage(statsPrefix("K/D Ratio") + "   - " + (double) Math.round((double) kills / (double) deaths * 100) / 100);
             player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "---------|" + ChatColor.DARK_RED + " FFA Stats " + ChatColor.RED + "|---------");
 
         } else if (command.getName().equalsIgnoreCase("points")) {
-            PersistentDataContainer data = player.getPersistentDataContainer();
-            Double points = data.get(NSKPoints, PersistentDataType.DOUBLE);
-            player.sendMessage(statsPrefix("points") + "   - " + points);
+            player.sendMessage(statsPrefix("points") + "   - " + Database.getPlayerKillstreak(player));
             return true;
         } else {
             commandSender.sendMessage(command_wrong.replace("{prefix}", prefix));
         }
-        */
 
-        commandSender.sendMessage("This feature has been disabled :(");
         return true;
 
     }
