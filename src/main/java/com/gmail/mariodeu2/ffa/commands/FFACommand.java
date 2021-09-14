@@ -80,6 +80,7 @@ public class FFACommand implements CommandInterface {
             l.add("nostick");
             l.add("snowball");
             l.add("stick");
+            l.add("notouch");
             l.add("give");
         }
 

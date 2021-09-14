@@ -95,11 +95,6 @@ public class GameEvents implements Listener {
 
             Player tagger = playersAttacked.get(event.getPlayer()).getAttacker();
 
-            if (tagger == null) {
-                playersAttacked.remove(event.getPlayer());
-            }
-
-
             if (tagger.getWorld() == world) {
                 PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
 
@@ -114,6 +109,7 @@ public class GameEvents implements Listener {
 
         PlayerDataStorage.saveAndClear(event.getPlayer());
 
+        GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
         event.setQuitMessage("");
     }
 
@@ -204,8 +200,11 @@ public class GameEvents implements Listener {
 
         if ((
                 !player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) ||
-                        !event.getTo().getBlock().getType().equals(Material.LAVA) ||
-                        player.getFireTicks() == 0)) {
+                !event.getTo().getBlock().getType().equals(Material.LAVA))) {
+            return;
+        }
+
+        if(player.getFireTicks() == 0) {
             return;
         }
 
@@ -308,7 +307,7 @@ public class GameEvents implements Listener {
         // If the player is online change his stats
         if(tagger.isOnline() && PlayerDataStorage.cachedPlayerData.containsKey(tagger)) {
 
-            // Get the cached playerdata
+            // Get the cached player data
             PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
 
             // Increase the tagger's kills by 1
@@ -356,11 +355,13 @@ public class GameEvents implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (
                 event.getEntityType() != EntityType.PLAYER
-                || event.getCause() != EntityDamageEvent.DamageCause.FIRE
-                || event.getCause() != EntityDamageEvent.DamageCause.FIRE_TICK
-                || event.getCause() != EntityDamageEvent.DamageCause.LAVA) {
+                || !(event.getCause() == EntityDamageEvent.DamageCause.FIRE
+                || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK
+                || event.getCause() == EntityDamageEvent.DamageCause.LAVA)) {
             return;
         }
+
+        event.setDamage(0);
 
         killIfTagged((Player)event.getEntity());
     }

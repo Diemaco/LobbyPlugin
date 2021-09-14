@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -41,9 +42,10 @@ public class Util {
     public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {
         ItemStack itemStack = new ItemStack(material, amount);
 
-        itemStack.getItemMeta().setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
-
-        itemStack.getItemMeta().setLore(Arrays.stream(lore).map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        itemMeta.setLore(Arrays.stream(lore).map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
+        itemStack.setItemMeta(itemMeta);
 
         return itemStack;
     }

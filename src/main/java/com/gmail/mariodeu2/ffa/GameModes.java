@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -59,9 +60,13 @@ public class GameModes {
             selectedPlayer.getInventory().setLeggings(LeatherLeggings);
             selectedPlayer.getInventory().setBoots(LeatherBoots);
 
-            selectedPlayer.getInventory().setItem(0, Util.createItem(Material.GOLDEN_SWORD, 1, "&4&lHot Fucking Sword", new String[]{
+            ItemStack sword = Util.createItem(Material.GOLDEN_SWORD, 1, "&4&lHot Fucking Sword", new String[]{
                     "&a&lUsed to set things or people on fire", "&a&lKeep away from explosives"
-            }));
+            });
+
+            sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+
+            selectedPlayer.getInventory().setItem(0, sword);
         }
     }
 
