@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -144,7 +145,9 @@ public class GameEvents implements Listener {
                 player instanceof Player &&
                 attacker instanceof Player &&
                 player.getWorld() == world) &&
-                event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+                (event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK
+                        || event.getCause() == EntityDamageEvent.DamageCause.FIRE
+                        || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK)) {
             return;
         }
 
@@ -192,7 +195,7 @@ public class GameEvents implements Listener {
         ProjectileSource shooter = event.getEntity().getShooter();
         Entity hitEntity = event.getHitEntity();
 
-        if (snowball instanceof Snowball && hitEntity instanceof Player && hitEntity.getLocation().getBlockY() < 62 && shooter instanceof Player) {
+        if (snowball instanceof Snowball && hitEntity instanceof Player && shooter instanceof Player) {
             if (!shooter.equals(hitEntity)) {
                 ((Player) event.getHitEntity()).damage(1, (Player) event.getEntity().getShooter());
                 ((Player) event.getHitEntity()).setHealth(20);
@@ -212,15 +215,7 @@ public class GameEvents implements Listener {
             return;
         }
 
-
-        if (playersAttacked.containsKey(player)) {
-            killPlayer(player, playersAttacked.get(player).getAttacker());
-            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-        } else {
-            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-            player.setFireTicks(0);
-            player.sendActionBar(player_fall);
-        }
+        killIfTagged(player);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -267,10 +262,8 @@ public class GameEvents implements Listener {
             x2 = eyeLocation.getX();
             y2 = eyeLocation.getY();
             z2 = eyeLocation.getZ();
-            if (!(player.getEyeLocation().getBlockY() >= 60 && eyeLocation.getY() <= 60) || !(player.getEyeLocation().getBlockY() <= 60 && eyeLocation.getY() >= 60)) {
-                killPlayer(playerHit, player);
-                playerHit.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
-            }
+
+            killPlayer(playerHit, player);
         }
 
         double distance = Math.pow(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2) + Math.pow((z2 - z1), 2), 0.5);
@@ -284,37 +277,30 @@ public class GameEvents implements Listener {
             dir.multiply(0.1);
             location.add(dir);
 
-            if (player.getEyeLocation().getBlockY() >= 60) {
-                if (location.getY() <= 60) {
-                    ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
+            ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
 
-                    particle.allPlayers();
-                    particle.count(0);
-                    particle.force(true);
-                    particle.location(location.set(location.getX(), 60D, location.getZ()));
-                    particle.offset(0.0, 0.0, 0.0);
-                    particle.spawn();
+            particle.allPlayers();
+            particle.count(0);
+            particle.force(true);
+            particle.location(location.set(location.getX(), 60D, location.getZ()));
+            particle.offset(0.0, 0.0, 0.0);
+            particle.spawn();
+        }
+    }
 
-                    break;
-                }
-            } else if (player.getEyeLocation().getBlockY() <= 60) {
-                if (location.getY() >= 60) {
-                    ParticleBuilder particle = new ParticleBuilder(Particle.FIREWORKS_SPARK);
-
-                    particle.allPlayers();
-                    particle.count(0);
-                    particle.force(true);
-                    particle.location(location.set(location.getX(), 60D, location.getZ()));
-                    particle.offset(0.0, 0.0, 0.0);
-                    particle.spawn();
-
-                    break;
-                }
-            }
+    public void killIfTagged(Player player) {
+        if (playersAttacked.containsKey(player)) {
+            killPlayer(player, playersAttacked.get(player).getAttacker());
+        } else {
+            player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
+            player.sendActionBar(player_fall);
         }
     }
 
     public void killPlayer(Player player, Player tagger) {
+
+        player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
+        player.setFireTicks(0);
 
         ArrayList<Object> set = Database.stats.get(player);
         set.set(1, (int) set.get(1) + 1);
@@ -365,7 +351,19 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        event.setCancelled(true);
+
+        if(
+                event.getEntityType() != EntityType.PLAYER ||
+                !(
+                        event.getCause().equals(EntityDamageEvent.DamageCause.FIRE) ||
+                        event.getCause().equals(EntityDamageEvent.DamageCause.FIRE_TICK))) {
+            return;
+        }
+
+        Player player = (Player)event.getEntity();
+
+        killIfTagged(player);
+        event.setDamage(0);
     }
 
     public static class attackedPlayer {

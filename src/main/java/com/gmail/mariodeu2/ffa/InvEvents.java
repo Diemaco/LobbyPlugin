@@ -3,7 +3,6 @@ package com.gmail.mariodeu2.ffa;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -57,12 +56,11 @@ public class InvEvents implements Listener {
         }
 
         Player player = event.getPlayer();
-        Location playerLocation = player.getLocation();
 
         if (event.getItem().getType().equals(Material.COMPASS)) {
 
             if(!AuthMeApi.getInstance().isAuthenticated(event.getPlayer())) {
-                player.sendMessage("Please login to use this menu!");
+                player.sendActionBar(Settings.not_authenticated);
                 return;
             }
 

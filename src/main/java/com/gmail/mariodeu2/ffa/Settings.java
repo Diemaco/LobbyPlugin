@@ -29,6 +29,7 @@ public class Settings {
     public static String player_leave = "{prefix}&a&l{player}&r&a left the game so you received {leave_bonus} points";
     public static String command_wrong = "{prefix}&cWrong usage!";
     public static String stat = "&4&lFFA-{stat}:{newline}&r";
+    public static String not_authenticated = "&4&lPlease login to use this menu!";
 
     public Settings() {
 
@@ -49,6 +50,7 @@ public class Settings {
 
         config.addDefault("commandWrong", command_wrong);
         config.addDefault("stat", stat);
+        config.addDefault("not_authenticated", not_authenticated);
 
         config.options().copyDefaults(true);
         plugin.saveConfig();
@@ -68,5 +70,6 @@ public class Settings {
 
         command_wrong = ChatColor.translateAlternateColorCodes('&', config.getString("commandWrong"));
         stat = ChatColor.translateAlternateColorCodes('&', config.getString("stat"));
+        not_authenticated = ChatColor.translateAlternateColorCodes('&', config.getString("not_authenticated"));
     }
 }

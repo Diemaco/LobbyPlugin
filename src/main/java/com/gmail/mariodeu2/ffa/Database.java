@@ -11,10 +11,8 @@ import java.util.HashMap;
 
 public class Database {
 
-    // public static BukkitTask loopTask;
     public static HashMap<Player, ArrayList<Object>> stats = new HashMap<>();
     public static Plugin plugin = JavaPlugin.getPlugin(main.class);
-    // public static HashMap<Player, Long> timers = new HashMap<>();
 
 
     public static int getPlayerKills(Player player) {
