@@ -34,8 +34,8 @@ public class InventoryEvents implements Listener {
         if (!event.getInventory().contains(itemCreator.survivalMenuItem)) return;
 
 
-        if (Main.playersAttacked.containsKey(player)) {
-            player.sendMessage(prefix + ChatColor.BOLD + "" + ChatColor.GREEN + "You must wait " + Main.playersAttacked.get(player).getSecondsLeft() + " seconds until you can use this command");
+        if (GameEvents.playersAttacked.containsKey(player)) {
+            player.sendMessage(prefix + ChatColor.BOLD + "" + ChatColor.GREEN + "You must wait " + GameEvents.playersAttacked.get(player).getSecondsLeft() + " seconds until you can use this command");
             return;
         }
 

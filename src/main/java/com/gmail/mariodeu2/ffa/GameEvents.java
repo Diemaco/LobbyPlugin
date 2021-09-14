@@ -22,15 +22,18 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import static com.gmail.mariodeu2.ffa.Main.*;
+import static com.gmail.mariodeu2.ffa.Main.itemCreator;
+import static com.gmail.mariodeu2.ffa.Main.lock;
 import static com.gmail.mariodeu2.ffa.Settings.*;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("ConstantConditions")
 public class GameEvents implements Listener {
 
+    public static final HashMap<Player, attackedPlayer> playersAttacked = new HashMap<>();
     private final JavaPlugin plugin = Main.getPlugin(Main.class);
 
     @EventHandler
@@ -61,8 +64,8 @@ public class GameEvents implements Listener {
         event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
 
         // Give item depending on current game mode
-        switch (currentMode) {
-            case STICK -> player.getInventory().setItem(0, itemCreator.normalStick);
+        switch (GameModes.currentGameMode) {
+            case STICK -> player.getInventory().setItem(0, itemCreator.stick);
             case NOSTICKS -> player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
             case SNOWBALL -> player.getInventory().setItem(0, itemCreator.snowball);
             case SHOOTIE_SHOOT -> player.getInventory().setItem(0, itemCreator.shootie_shoot);
@@ -333,7 +336,7 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        if (currentMode.equals(gameMode.SNOWBALL) && event.getEntity() instanceof Snowball) {
+        if (GameModes.currentGameMode.equals(GameModes.gameMode.SNOWBALL) && event.getEntity() instanceof Snowball) {
             if (event.getEntity().getShooter() instanceof InventoryHolder) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.snowball), 1L);
             }

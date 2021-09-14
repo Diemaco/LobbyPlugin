@@ -1,6 +1,6 @@
 package com.gmail.mariodeu2.ffa.commands;
 
-import com.gmail.mariodeu2.ffa.Main;
+import com.gmail.mariodeu2.ffa.GameModes;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.mariodeu2.ffa.Main.currentMode;
+import static com.gmail.mariodeu2.ffa.GameModes.currentGameMode;
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.command_wrong;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
@@ -47,16 +47,16 @@ public class FFACommand implements CommandInterface {
 
         switch (args[0].toLowerCase()) {
             case "snowball":
-                currentMode = Main.gameMode.SNOWBALL;
+                currentGameMode = GameModes.gameMode.SNOWBALL;
                 break;
             case "stick":
-                currentMode = Main.gameMode.STICK;
+                currentGameMode = GameModes.gameMode.STICK;
                 break;
             case "nostick":
-                currentMode = Main.gameMode.NOSTICKS;
+                currentGameMode = GameModes.gameMode.NOSTICKS;
                 break;
             case "shootie_shoot":
-                currentMode = Main.gameMode.SHOOTIE_SHOOT;
+                currentGameMode = GameModes.gameMode.SHOOTIE_SHOOT;
                 break;
             case "give":
 
@@ -70,7 +70,7 @@ public class FFACommand implements CommandInterface {
                         player.getInventory().addItem(itemCreator.snowball);
                         break;
                     case "stick":
-                        player.getInventory().addItem(itemCreator.normalStick);
+                        player.getInventory().addItem(itemCreator.stick);
                         break;
                     case "shootie_shoot":
                         player.getInventory().addItem(itemCreator.shootie_shoot);

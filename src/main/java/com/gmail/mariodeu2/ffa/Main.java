@@ -3,42 +3,27 @@ package com.gmail.mariodeu2.ffa;
 import com.gmail.mariodeu2.ffa.commands.FFACommand;
 import com.gmail.mariodeu2.ffa.commands.PointsCommand;
 import com.gmail.mariodeu2.ffa.commands.StatsCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 
 public class Main extends JavaPlugin {
 
-    public static ItemCreator itemCreator;
-
     public static final ReentrantLock lock = new ReentrantLock();
-    public static final HashMap<Player, GameEvents.attackedPlayer> playersAttacked = new HashMap<>();
 
-
-    public static gameMode currentMode = gameMode.STICK;
+    public static final ItemCreator itemCreator = new ItemCreator();
+    private static final CommandManager commandManager = new CommandManager();
 
     @Override
     public void onEnable() {
-
-        Settings configuration = new Settings();
-        itemCreator = new ItemCreator();
-        configuration.setupConfig();
-        configuration.loadConfig();
-
-        itemCreator.normalStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
-        itemCreator.snowball.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
-
-        CommandManager commandManager = new CommandManager();
+        Settings.setupConfig();
+        Settings.loadConfig();
 
         commandManager.registerCommand(new StatsCommand());
         commandManager.registerCommand(new PointsCommand());
         commandManager.registerCommand(new FFACommand());
-
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
@@ -48,15 +33,8 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : PlayerDataStorage.cachedPlayerData.keySet()) {
             PlayerDataStorage.saveAndClear(player);
         }
-    }
-
-    public enum gameMode {
-        STICK,
-        NOSTICKS,
-        SNOWBALL,
-        SHOOTIE_SHOOT
     }
 }

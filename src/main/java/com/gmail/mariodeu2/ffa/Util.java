@@ -12,7 +12,7 @@ import java.io.DataOutputStream;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.gmail.mariodeu2.ffa.Main.currentMode;
+import static com.gmail.mariodeu2.ffa.GameModes.currentGameMode;
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
 import static com.gmail.mariodeu2.ffa.Settings.stat;
@@ -42,11 +42,11 @@ public class Util {
     }
 
     public static void reloadItems() {
-        switch (currentMode) {
+        switch (currentGameMode) {
             case SNOWBALL:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.normalStick);
+                        player.getInventory().remove(itemCreator.stick);
 
                         player.getInventory().addItem(itemCreator.snowball);
                         continue;
@@ -70,7 +70,7 @@ public class Util {
             case NOSTICKS:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.normalStick);
+                        player.getInventory().remove(itemCreator.stick);
                         player.getInventory().remove(itemCreator.snowball);
 
                         continue;
@@ -84,11 +84,11 @@ public class Util {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
                         player.getInventory().remove(itemCreator.snowball);
 
-                        player.getInventory().addItem(itemCreator.normalStick);
+                        player.getInventory().addItem(itemCreator.stick);
                         continue;
                     }
 
-                    player.getInventory().setItem(0, itemCreator.normalStick);
+                    player.getInventory().setItem(0, itemCreator.stick);
                 }
                 break;
         }

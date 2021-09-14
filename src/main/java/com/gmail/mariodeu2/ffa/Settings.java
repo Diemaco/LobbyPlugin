@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Settings {
 
-    static final Plugin plugin = JavaPlugin.getPlugin(Main.class);
+    private static final Plugin plugin = JavaPlugin.getPlugin(Main.class);
 
     public static final World world = Bukkit.getWorld("world");
     public static final Location lobbySpawnLocation = new Location(world, 27.5, 108, -25, 180, 45);
@@ -29,11 +29,7 @@ public class Settings {
     public static String stat = "&4&lFFA-{stat}:{newline}&r";
     public static String not_authenticated = "&4&lPlease login to use this menu!";
 
-    public Settings() {
-
-    }
-
-    public void setupConfig() {
+    public static void setupConfig() {
         FileConfiguration config = plugin.getConfig();
 
 
@@ -54,7 +50,7 @@ public class Settings {
         plugin.saveConfig();
     }
 
-    public void loadConfig() {
+    public static void loadConfig() {
         FileConfiguration config = plugin.getConfig();
 
         damageTimeout =  config.getInt("damageTimeout");
