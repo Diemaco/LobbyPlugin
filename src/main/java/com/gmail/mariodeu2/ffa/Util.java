@@ -2,7 +2,6 @@ package com.gmail.mariodeu2.ffa;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,8 +11,6 @@ import java.io.DataOutputStream;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.gmail.mariodeu2.ffa.GameModes.currentGameMode;
-import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
 import static com.gmail.mariodeu2.ffa.Settings.stat;
 
@@ -39,59 +36,6 @@ public class Util {
 
     public static String statsPrefix(String text) {
         return stat.replace("{stat}", text).replace("{newline}", "\n");
-    }
-
-    public static void reloadItems() {
-        switch (currentGameMode) {
-            case SNOWBALL:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.stick);
-
-                        player.getInventory().addItem(itemCreator.snowball);
-                        continue;
-                    }
-
-                    player.getInventory().setItem(0, itemCreator.snowball);
-                }
-                break;
-            case SHOOTIE_SHOOT:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.shootie_shoot);
-
-                        player.getInventory().addItem(itemCreator.shootie_shoot);
-                        continue;
-                    }
-
-                    player.getInventory().setItem(0, itemCreator.shootie_shoot);
-                }
-                break;
-            case NOSTICKS:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.stick);
-                        player.getInventory().remove(itemCreator.snowball);
-
-                        continue;
-                    }
-
-                    player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
-                }
-                break;
-            case STICK:
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(itemCreator.snowball);
-
-                        player.getInventory().addItem(itemCreator.stick);
-                        continue;
-                    }
-
-                    player.getInventory().setItem(0, itemCreator.stick);
-                }
-                break;
-        }
     }
 
     public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {

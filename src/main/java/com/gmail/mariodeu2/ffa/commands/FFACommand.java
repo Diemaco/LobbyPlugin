@@ -9,11 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.mariodeu2.ffa.GameModes.currentGameMode;
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.command_wrong;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
-import static com.gmail.mariodeu2.ffa.Util.reloadItems;
 
 public class FFACommand implements CommandInterface {
     @Override
@@ -46,44 +44,30 @@ public class FFACommand implements CommandInterface {
         }
 
         switch (args[0].toLowerCase()) {
-            case "snowball":
-                currentGameMode = GameModes.gameMode.SNOWBALL;
-                break;
-            case "stick":
-                currentGameMode = GameModes.gameMode.STICK;
-                break;
-            case "nostick":
-                currentGameMode = GameModes.gameMode.NOSTICKS;
-                break;
-            case "shootie_shoot":
-                currentGameMode = GameModes.gameMode.SHOOTIE_SHOOT;
-                break;
-            case "give":
-
+            case "snowball" ->
+                    GameModes.changeGameMode(GameModes.gameMode.SNOWBALL);
+            case "stick" ->
+                    GameModes.changeGameMode(GameModes.gameMode.STICK);
+            case "nostick" ->
+                    GameModes.changeGameMode(GameModes.gameMode.NOSTICKS);
+            case "shootie_shoot" ->
+                    GameModes.changeGameMode(GameModes.gameMode.SHOOTIE_SHOOT);
+            case "notouch" ->
+                    GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
+            case "give" -> {
                 if (args.length < 2) {
                     player.sendMessage(command_wrong.replace("{prefix}", prefix));
                     return false;
                 }
-
                 switch (args[1].toLowerCase()) {
-                    case "snowball":
-                        player.getInventory().addItem(itemCreator.snowball);
-                        break;
-                    case "stick":
-                        player.getInventory().addItem(itemCreator.stick);
-                        break;
-                    case "shootie_shoot":
-                        player.getInventory().addItem(itemCreator.shootie_shoot);
-                        break;
-                    default:
-                        player.sendMessage(command_wrong.replace("{prefix}", prefix));
+                    case "snowball" -> player.getInventory().addItem(itemCreator.snowball);
+                    case "stick" -> player.getInventory().addItem(itemCreator.stick);
+                    case "shootie_shoot" -> player.getInventory().addItem(itemCreator.shootie_shoot);
+                    default -> player.sendMessage(command_wrong.replace("{prefix}", prefix));
                 }
-                break;
-            default:
-                player.sendMessage(command_wrong.replace("{prefix}", prefix));
+            }
+            default -> player.sendMessage(command_wrong.replace("{prefix}", prefix));
         }
-
-        reloadItems();
 
         return true;
     }
