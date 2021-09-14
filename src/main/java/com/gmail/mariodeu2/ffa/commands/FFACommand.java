@@ -1,6 +1,6 @@
 package com.gmail.mariodeu2.ffa.commands;
 
-import com.gmail.mariodeu2.ffa.main;
+import com.gmail.mariodeu2.ffa.Main;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -9,11 +9,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gmail.mariodeu2.ffa.Main.currentMode;
+import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.command_wrong;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
 import static com.gmail.mariodeu2.ffa.Util.reloadItems;
-import static com.gmail.mariodeu2.ffa.main.currentMode;
-import static com.gmail.mariodeu2.ffa.main.items;
 
 public class FFACommand implements CommandInterface {
     @Override
@@ -47,16 +47,16 @@ public class FFACommand implements CommandInterface {
 
         switch (args[0].toLowerCase()) {
             case "snowball":
-                currentMode = main.gameMode.SNOWBALL;
+                currentMode = Main.gameMode.SNOWBALL;
                 break;
             case "stick":
-                currentMode = main.gameMode.STICK;
+                currentMode = Main.gameMode.STICK;
                 break;
             case "nostick":
-                currentMode = main.gameMode.NOSTICKS;
+                currentMode = Main.gameMode.NOSTICKS;
                 break;
             case "shootie_shoot":
-                currentMode = main.gameMode.SHOOTIE_SHOOT;
+                currentMode = Main.gameMode.SHOOTIE_SHOOT;
                 break;
             case "give":
 
@@ -67,13 +67,13 @@ public class FFACommand implements CommandInterface {
 
                 switch (args[1].toLowerCase()) {
                     case "snowball":
-                        player.getInventory().addItem(items.snowball);
+                        player.getInventory().addItem(itemCreator.snowball);
                         break;
                     case "stick":
-                        player.getInventory().addItem(items.normalStick);
+                        player.getInventory().addItem(itemCreator.normalStick);
                         break;
                     case "shootie_shoot":
-                        player.getInventory().addItem(items.shootie_shoot);
+                        player.getInventory().addItem(itemCreator.shootie_shoot);
                         break;
                     default:
                         player.sendMessage(command_wrong.replace("{prefix}", prefix));

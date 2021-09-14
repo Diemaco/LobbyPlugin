@@ -1,6 +1,6 @@
 package com.gmail.mariodeu2.ffa.commands;
 
-import com.gmail.mariodeu2.ffa.Database;
+import com.gmail.mariodeu2.ffa.PlayerDataStorage;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class PointsCommand implements CommandInterface {
             return false;
         }
 
-        commandSender.sendMessage(statsPrefix("points") + "   - " + Database.getPlayerPoints((Player)commandSender));
+        commandSender.sendMessage(statsPrefix("points") + "   - " + PlayerDataStorage.getPlayerPoints((Player)commandSender));
 
         return true;
     }

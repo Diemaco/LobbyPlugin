@@ -14,7 +14,7 @@ import java.util.List;
 
 public class CommandManager implements CommandExecutor, TabCompleter {
 
-    private final JavaPlugin plugin = main.getPlugin(main.class);
+    private final JavaPlugin plugin = Main.getPlugin(Main.class);
     private final List<CommandInterface> registeredCommands = new ArrayList<>();
 
     public void registerCommand(CommandInterface command) {

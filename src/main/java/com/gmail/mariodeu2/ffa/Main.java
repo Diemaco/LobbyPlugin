@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 
-public class main extends JavaPlugin {
+public class Main extends JavaPlugin {
 
-    public static Items items;
+    public static ItemCreator itemCreator;
 
     public static final ReentrantLock lock = new ReentrantLock();
     public static final HashMap<Player, GameEvents.attackedPlayer> playersAttacked = new HashMap<>();
@@ -26,12 +26,12 @@ public class main extends JavaPlugin {
     public void onEnable() {
 
         Settings configuration = new Settings();
-        items = new Items();
+        itemCreator = new ItemCreator();
         configuration.setupConfig();
         configuration.loadConfig();
 
-        items.normalStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
-        items.snowball.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
+        itemCreator.normalStick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+        itemCreator.snowball.addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
 
         CommandManager commandManager = new CommandManager();
 
@@ -42,14 +42,14 @@ public class main extends JavaPlugin {
 
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        getServer().getPluginManager().registerEvents(new InvEvents(), this);
+        getServer().getPluginManager().registerEvents(new InventoryEvents(), this);
         getServer().getPluginManager().registerEvents(new GameEvents(), this);
     }
 
     @Override
     public void onDisable() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Database.updateAllAndRemoveFromCache(player);
+            PlayerDataStorage.updateAllAndRemoveFromCache(player);
         }
     }
 

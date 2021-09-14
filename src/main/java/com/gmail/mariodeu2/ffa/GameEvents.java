@@ -24,29 +24,29 @@ import org.bukkit.util.Vector;
 
 import java.util.Map;
 
+import static com.gmail.mariodeu2.ffa.Main.*;
 import static com.gmail.mariodeu2.ffa.Settings.*;
-import static com.gmail.mariodeu2.ffa.main.*;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("ConstantConditions")
 public class GameEvents implements Listener {
 
-    final JavaPlugin plugin = main.getPlugin(main.class);
+    final JavaPlugin plugin = Main.getPlugin(Main.class);
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         // Create player settings if player settings haven't been created before
-        if (!Database.playerExists(player)) {
-            Database.createPlayerProfile(player);
+        if (!PlayerDataStorage.playerExists(player)) {
+            PlayerDataStorage.createPlayerProfile(player);
         }
 
         // Clear inventory
         player.getInventory().clear();
 
         // Set slot 8 to the compass menu item
-        player.getInventory().setItem(8, items.compassMenuItem);
+        player.getInventory().setItem(8, itemCreator.compassMenuItem);
 
         // Enable 1.8 combat for player
         player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(500.0);
@@ -63,25 +63,25 @@ public class GameEvents implements Listener {
         // Give item depending on current game mode
         switch (currentMode) {
             case STICK:
-                player.getInventory().setItem(0, items.normalStick);
+                player.getInventory().setItem(0, itemCreator.normalStick);
                 break;
             case NOSTICKS:
                 player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
                 break;
             case SNOWBALL:
-                player.getInventory().setItem(0, items.snowball);
+                player.getInventory().setItem(0, itemCreator.snowball);
                 break;
             case SHOOTIE_SHOOT:
-                player.getInventory().setItem(0, items.shootie_shoot);
+                player.getInventory().setItem(0, itemCreator.shootie_shoot);
                 break;
             default:
         }
 
         // Deserialize the player's data and cache it
-        Database.cachedPlayerData.put(player, Database.PlayerData.deserialize(player));
+        PlayerDataStorage.cachedPlayerData.put(player, PlayerDataStorage.PlayerData.deserialize(player));
 
         // Set the player's xp level to their killstreak
-        player.setLevel(Database.getPlayerKillstreak(player));
+        player.setLevel(PlayerDataStorage.getPlayerKillstreak(player));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -90,11 +90,11 @@ public class GameEvents implements Listener {
 
             for (Map.Entry<Player, attackedPlayer> set : playersAttacked.entrySet()) {
                 if(set.getValue().getAttacker().equals(event.getPlayer())) {
-                    Database.PlayerData setPlayer = Database.cachedPlayerData.get(set.getKey());
+                    PlayerDataStorage.PlayerData setPlayer = PlayerDataStorage.cachedPlayerData.get(set.getKey());
 
                     setPlayer.points += 0.25;
 
-                    Database.cachedPlayerData.replace(set.getKey(), setPlayer);
+                    PlayerDataStorage.cachedPlayerData.replace(set.getKey(), setPlayer);
                     set.getKey().sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
                 }
             }
@@ -107,18 +107,18 @@ public class GameEvents implements Listener {
 
 
             if (tagger.getWorld() == world) {
-                Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
+                PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
 
                 setTagger.points += 0.25;
 
-                Database.cachedPlayerData.replace(tagger, setTagger);
+                PlayerDataStorage.cachedPlayerData.replace(tagger, setTagger);
                 tagger.sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
             }
 
             playersAttacked.remove(event.getPlayer());
         }
 
-        Database.updateAllAndRemoveFromCache(event.getPlayer());
+        PlayerDataStorage.updateAllAndRemoveFromCache(event.getPlayer());
 
         event.setQuitMessage("");
     }
@@ -135,7 +135,7 @@ public class GameEvents implements Listener {
 
             playersAttacked.remove(event.getPlayer());
         }
-        Database.updateAllAndRemoveFromCache(event.getPlayer());
+        PlayerDataStorage.updateAllAndRemoveFromCache(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -297,7 +297,7 @@ public class GameEvents implements Listener {
         player.setFireTicks(0);
 
         // Get the cached playerdata
-        Database.PlayerData cachedData = Database.cachedPlayerData.get(player);
+        PlayerDataStorage.PlayerData cachedData = PlayerDataStorage.cachedPlayerData.get(player);
 
         // Increase the player's deaths
         cachedData.deaths += 1;
@@ -312,10 +312,10 @@ public class GameEvents implements Listener {
         player.sendActionBar(player_lose.replace("{player}", tagger.getName()));
 
         // If the player is online change his stats
-        if(tagger.isOnline() && Database.cachedPlayerData.containsKey(tagger)) {
+        if(tagger.isOnline() && PlayerDataStorage.cachedPlayerData.containsKey(tagger)) {
 
             // Get the cached playerdata
-            Database.PlayerData setTagger = Database.cachedPlayerData.get(tagger);
+            PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
 
             // Increase the tagger's kills by 1
             setTagger.kills += 1;
@@ -344,7 +344,7 @@ public class GameEvents implements Listener {
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (currentMode.equals(gameMode.SNOWBALL) && event.getEntity() instanceof Snowball) {
             if (event.getEntity().getShooter() instanceof InventoryHolder) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, items.snowball), 1L);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.snowball), 1L);
             }
         }
     }

@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Items {
+public class ItemCreator {
     public final ItemStack survivalTP = new ItemStack(Material.GRASS_BLOCK);
     public final ItemStack creativeTP = new ItemStack(Material.DIAMOND_BLOCK);
 
@@ -20,7 +20,7 @@ public class Items {
     public final ItemStack normalStick = new ItemStack(Material.STICK, 1);
     public final ItemStack snowball = new ItemStack(Material.SNOWBALL, 16);
 
-    public Items() {
+    public ItemCreator() {
         ItemMeta itemMetaSurvival = survivalTP.getItemMeta();
         List<String> lSurvival = new ArrayList<>();
 

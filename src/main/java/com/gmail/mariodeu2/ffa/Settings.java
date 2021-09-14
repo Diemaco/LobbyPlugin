@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Settings {
 
-    static final Plugin plugin = JavaPlugin.getPlugin(main.class);
+    static final Plugin plugin = JavaPlugin.getPlugin(Main.class);
 
     public static final World world = Bukkit.getWorld("world");
     public static final Location lobbySpawnLocation = new Location(world, 27.5, 108, -25, 180, 45);

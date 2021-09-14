@@ -5,24 +5,24 @@ import org.bukkit.entity.Player;
 import java.io.*;
 import java.util.HashMap;
 
-public class Database {
+public class PlayerDataStorage {
 
     public static final HashMap<Player, PlayerData> cachedPlayerData = new HashMap<>();
 
     public static int getPlayerKills(Player player) {
-        return Database.cachedPlayerData.get(player).kills;
+        return PlayerDataStorage.cachedPlayerData.get(player).kills;
     }
 
     public static int getPlayerKillstreak(Player player) {
-        return Database.cachedPlayerData.get(player).killstreak;
+        return PlayerDataStorage.cachedPlayerData.get(player).killstreak;
     }
 
     public static int getPlayerDeaths(Player player) {
-        return Database.cachedPlayerData.get(player).deaths;
+        return PlayerDataStorage.cachedPlayerData.get(player).deaths;
     }
 
     public static double getPlayerPoints(Player player) {
-        return Database.cachedPlayerData.get(player).points;
+        return PlayerDataStorage.cachedPlayerData.get(player).points;
     }
 
     public static void updateAllAndRemoveFromCache(Player player) {

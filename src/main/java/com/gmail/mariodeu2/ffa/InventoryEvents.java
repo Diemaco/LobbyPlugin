@@ -15,11 +15,11 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
+import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
-import static com.gmail.mariodeu2.ffa.main.items;
 
 @SuppressWarnings("ConstantConditions")
-public class InvEvents implements Listener {
+public class InventoryEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
@@ -31,11 +31,11 @@ public class InvEvents implements Listener {
             event.setResult(Event.Result.DENY);
         }
 
-        if (!event.getInventory().contains(items.survivalTP)) return;
+        if (!event.getInventory().contains(itemCreator.survivalTP)) return;
 
 
-        if (main.playersAttacked.containsKey(player)) {
-            player.sendMessage(prefix + ChatColor.BOLD + "" + ChatColor.GREEN + "You must wait " + main.playersAttacked.get(player).getSecondsLeft() + " seconds until you can use this command");
+        if (Main.playersAttacked.containsKey(player)) {
+            player.sendMessage(prefix + ChatColor.BOLD + "" + ChatColor.GREEN + "You must wait " + Main.playersAttacked.get(player).getSecondsLeft() + " seconds until you can use this command");
             return;
         }
 
@@ -64,8 +64,8 @@ public class InvEvents implements Listener {
                 return;
             }
 
-            items.updateMenu();
-            player.openInventory(items.serverMenu);
+            itemCreator.updateMenu();
+            player.openInventory(itemCreator.serverMenu);
         }
     }
 

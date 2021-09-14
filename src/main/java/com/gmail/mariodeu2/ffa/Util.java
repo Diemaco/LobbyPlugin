@@ -10,10 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 
+import static com.gmail.mariodeu2.ffa.Main.currentMode;
+import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
 import static com.gmail.mariodeu2.ffa.Settings.stat;
-import static com.gmail.mariodeu2.ffa.main.currentMode;
-import static com.gmail.mariodeu2.ffa.main.items;
 
 public class Util {
 
@@ -31,7 +31,7 @@ public class Util {
             return;
         }
 
-        player.sendPluginMessage(main.getPlugin(main.class), "BungeeCord", b.toByteArray());
+        player.sendPluginMessage(Main.getPlugin(Main.class), "BungeeCord", b.toByteArray());
 
     }
 
@@ -44,32 +44,32 @@ public class Util {
             case SNOWBALL:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(items.normalStick);
+                        player.getInventory().remove(itemCreator.normalStick);
 
-                        player.getInventory().addItem(items.snowball);
+                        player.getInventory().addItem(itemCreator.snowball);
                         continue;
                     }
 
-                    player.getInventory().setItem(0, items.snowball);
+                    player.getInventory().setItem(0, itemCreator.snowball);
                 }
                 break;
             case SHOOTIE_SHOOT:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(items.shootie_shoot);
+                        player.getInventory().remove(itemCreator.shootie_shoot);
 
-                        player.getInventory().addItem(items.shootie_shoot);
+                        player.getInventory().addItem(itemCreator.shootie_shoot);
                         continue;
                     }
 
-                    player.getInventory().setItem(0, items.shootie_shoot);
+                    player.getInventory().setItem(0, itemCreator.shootie_shoot);
                 }
                 break;
             case NOSTICKS:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(items.normalStick);
-                        player.getInventory().remove(items.snowball);
+                        player.getInventory().remove(itemCreator.normalStick);
+                        player.getInventory().remove(itemCreator.snowball);
 
                         continue;
                     }
@@ -80,13 +80,13 @@ public class Util {
             case STICK:
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getGameMode().equals(GameMode.CREATIVE)) {
-                        player.getInventory().remove(items.snowball);
+                        player.getInventory().remove(itemCreator.snowball);
 
-                        player.getInventory().addItem(items.normalStick);
+                        player.getInventory().addItem(itemCreator.normalStick);
                         continue;
                     }
 
-                    player.getInventory().setItem(0, items.normalStick);
+                    player.getInventory().setItem(0, itemCreator.normalStick);
                 }
                 break;
         }

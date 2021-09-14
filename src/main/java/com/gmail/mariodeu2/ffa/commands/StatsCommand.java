@@ -1,6 +1,6 @@
 package com.gmail.mariodeu2.ffa.commands;
 
-import com.gmail.mariodeu2.ffa.Database;
+import com.gmail.mariodeu2.ffa.PlayerDataStorage;
 import com.gmail.mariodeu2.ffa.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -32,13 +32,13 @@ public class StatsCommand implements CommandInterface {
 
         Player player = (Player)commandSender;
 
-        int kills = Database.getPlayerKills(player);
-        int deaths = Database.getPlayerDeaths(player);
+        int kills = PlayerDataStorage.getPlayerKills(player);
+        int deaths = PlayerDataStorage.getPlayerDeaths(player);
 
         player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "---------|" + ChatColor.DARK_RED + " FFA Stats " + ChatColor.RED + "|---------");
         player.sendMessage(Util.statsPrefix("kills") + "   - " + kills);
         player.sendMessage(Util.statsPrefix("deaths") + "   - " + deaths);
-        player.sendMessage(Util.statsPrefix("killstreak") + "   - " + Database.getPlayerKills(player));
+        player.sendMessage(Util.statsPrefix("killstreak") + "   - " + PlayerDataStorage.getPlayerKills(player));
         player.sendMessage(Util.statsPrefix("K/D Ratio") + "   - " + (double) Math.round((double) kills / (double) deaths * 100) / 100);
         player.sendMessage(ChatColor.BOLD + "" + ChatColor.RED + "---------|" + ChatColor.DARK_RED + " FFA Stats " + ChatColor.RED + "|---------");
 
