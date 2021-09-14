@@ -7,6 +7,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.function.Consumer;
+
 public class ItemCreator {
     public final ItemStack survivalMenuItem =
             Util.createItem(Material.GRASS_BLOCK, 1, "&2&lSurvival", new String[]{
@@ -51,7 +53,7 @@ public class ItemCreator {
     }
 
     public void updateMenu() {
-        this.serverMenu.setItem(13, this.survivalMenuItem);
-        this.serverMenu.setItem(15, this.creativeMenuItem);
+        this.serverMenu.setItem(12, this.survivalMenuItem);
+        this.serverMenu.setItem(14, this.creativeMenuItem);
     }
 }

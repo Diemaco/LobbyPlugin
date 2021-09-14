@@ -28,12 +28,10 @@ public class GameModes {
         };
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            player.getInventory().setItem(0, newItem);
+            player.getInventory().clear();
 
-            player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
-            player.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
-            player.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
-            player.getInventory().setBoots(new ItemStack(Material.AIR, 1));
+            player.getInventory().setItem(8, newItem);
+            player.getInventory().setItem(8, itemCreator.compassMenuOpenItem);
         }
 
         if (newGameMode == gameMode.CANT_TOUCH_THIS) {
@@ -61,10 +59,10 @@ public class GameModes {
             selectedPlayer.getInventory().setBoots(LeatherBoots);
 
             ItemStack sword = Util.createItem(Material.GOLDEN_SWORD, 1, "&4&lHot Fucking Sword", new String[]{
-                    "&a&lUsed to set things or people on fire", "&a&lKeep away from explosives"
+                    "&c&lUsed to set things or people on fire", "&c&lKeep away from explosives"
             });
 
-            sword.addEnchantment(Enchantment.FIRE_ASPECT, 1);
+            sword.addEnchantment(Enchantment.FIRE_ASPECT, 10);
 
             selectedPlayer.getInventory().setItem(0, sword);
         }

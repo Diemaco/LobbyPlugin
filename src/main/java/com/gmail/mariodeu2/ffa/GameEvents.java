@@ -109,7 +109,10 @@ public class GameEvents implements Listener {
 
         PlayerDataStorage.saveAndClear(event.getPlayer());
 
-        GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
+        }, 0L);
+
         event.setQuitMessage("");
     }
 
@@ -141,6 +144,9 @@ public class GameEvents implements Listener {
             return;
         }
 
+        if(GameModes.selectedPlayer == player) {
+            event.setCancelled(true);
+        }
 
         event.setDamage(0);
         if (!playersAttacked.containsKey(player)) {
@@ -279,6 +285,14 @@ public class GameEvents implements Listener {
             player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
             player.sendActionBar(player_fall);
         }
+
+        if(player == GameModes.selectedPlayer) {
+            GameModes.changeGameMode(GameModes.gameMode.STICK);
+            GameModes.selectedPlayer = null;
+
+            Bukkit.broadcastMessage(
+                    ChatColor.translateAlternateColorCodes('&', "&4&l'" + player.getName() + "'&4&l died and your sticks have been given back"));
+        }
     }
 
     public void killPlayer(Player player, Player tagger) {
@@ -335,7 +349,7 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        if (GameModes.currentGameMode.equals(GameModes.gameMode.SNOWBALL) && event.getEntity() instanceof Snowball) {
+        if (GameModes.currentGameMode.equals(GameModes.gameMode.SNOWBALL)/* && event.getEntity() instanceof Snowball*/) {
             if (event.getEntity().getShooter() instanceof InventoryHolder) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.snowball), 1L);
             }

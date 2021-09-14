@@ -1,6 +1,7 @@
 package com.gmail.mariodeu2.ffa;
 
 import com.gmail.mariodeu2.ffa.commands.CommandInterface;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -22,7 +23,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
         if (!registeredCommands.contains(command)) {
             PluginCommand pluginCommand = plugin.getCommand(command.getName());
 
-            if (pluginCommand != null && !pluginCommand.isRegistered()) {
+            if (pluginCommand != null) {
                 pluginCommand.setExecutor(this);
                 pluginCommand.setTabCompleter(this);
                 pluginCommand.setUsage(command.getUsage());
@@ -36,10 +37,12 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command command, @NotNull String s, @NotNull String[] strings) {
         for (CommandInterface registeredCommand : registeredCommands) {
-            if (registeredCommand.getName().equals(command.getName())) {
+            if (registeredCommand.getName().equals(command.getName().toLowerCase())) {
                 return registeredCommand.execute(commandSender, s, strings);
             }
         }
+
+        Bukkit.getLogger().severe("Oops");
         return false;
     }
 
@@ -47,7 +50,7 @@ public class CommandManager implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull org.bukkit.command.Command command, @NotNull String s, @NotNull String[] strings) {
         for (CommandInterface registeredCommand : registeredCommands) {
-            if (registeredCommand.getName().equals(command.getName())) {
+            if (registeredCommand.getName().equals(command.getName().toLowerCase())) {
                 return registeredCommand.tabComplete(commandSender, s, strings);
             }
         }

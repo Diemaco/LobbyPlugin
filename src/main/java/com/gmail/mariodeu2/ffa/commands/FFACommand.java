@@ -32,11 +32,9 @@ public class FFACommand implements CommandInterface {
     @Override
     public boolean execute(CommandSender commandSender, String s, String[] args) {
 
-        if(!(commandSender instanceof Player)) {
+        if(!(commandSender instanceof Player player)) {
             return false;
         }
-
-        Player player = (Player)commandSender;
 
         if (args.length == 0) {
             player.sendMessage(command_wrong);
