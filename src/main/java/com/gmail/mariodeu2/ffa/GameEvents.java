@@ -1,6 +1,7 @@
 package com.gmail.mariodeu2.ffa;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import com.destroystokyo.paper.Title;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -55,7 +56,7 @@ public class GameEvents implements Listener {
         player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(500.0);
 
         // Set gamemode to the adventure mode
-        player.setGameMode(GameMode.ADVENTURE);
+        player.setGameMode(org.bukkit.GameMode.ADVENTURE);
 
         // Teleport to world spawn
         player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
@@ -64,12 +65,12 @@ public class GameEvents implements Listener {
         event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
 
         // Give item depending on current game mode
-        switch (GameModes.currentGameMode) {
-            case STICK -> player.getInventory().setItem(0, itemCreator.stick);
-            case NOSTICKS -> player.getInventory().setItem(0, new ItemStack(Material.AIR, 1));
-            case SNOWBALL -> player.getInventory().setItem(0, itemCreator.snowball);
-            case SHOOTIE_SHOOT -> player.getInventory().setItem(0, itemCreator.shootie_shoot);
-        }
+        player.getInventory().setItem(0, itemCreator.gameModeItems[ModeManager.currentGameMode.ordinal()]);
+
+        // Notify player if the 'Can't touch this' game mode is active
+        player.sendTitle(new Title(
+                ChatColor.translateAlternateColorCodes('&', "&4&lCan't touch this!"),
+                ChatColor.translateAlternateColorCodes('&', "&4&l" + ModeManager.selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
 
         // Deserialize the player's data and cache it
         PlayerDataStorage.cachedPlayerData.put(player, PlayerDataStorage.PlayerData.deserialize(player));
@@ -110,7 +111,7 @@ public class GameEvents implements Listener {
         PlayerDataStorage.saveAndClear(event.getPlayer());
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
+            ModeManager.changeGameMode(ModeManager.GameMode.CANT_TOUCH_THIS);
         }, 0L);
 
         event.setQuitMessage("");
@@ -144,7 +145,7 @@ public class GameEvents implements Listener {
             return;
         }
 
-        if(GameModes.selectedPlayer == player) {
+        if(ModeManager.selectedPlayer == player) {
             event.setCancelled(true);
         }
 
@@ -205,7 +206,7 @@ public class GameEvents implements Listener {
         Player player = event.getPlayer();
 
         if ((
-                !player.getPlayer().getGameMode().equals(GameMode.ADVENTURE) ||
+                !player.getPlayer().getGameMode().equals(org.bukkit.GameMode.ADVENTURE) ||
                 !event.getTo().getBlock().getType().equals(Material.LAVA))) {
             return;
         }
@@ -286,9 +287,9 @@ public class GameEvents implements Listener {
             player.sendActionBar(player_fall);
         }
 
-        if(player == GameModes.selectedPlayer) {
-            GameModes.changeGameMode(GameModes.gameMode.STICK);
-            GameModes.selectedPlayer = null;
+        if(player == ModeManager.selectedPlayer) {
+            ModeManager.changeGameMode(ModeManager.GameMode.STICK);
+            ModeManager.selectedPlayer = null;
 
             Bukkit.broadcastMessage(
                     ChatColor.translateAlternateColorCodes('&', "&4&l'" + player.getName() + "'&4&l died and your sticks have been given back"));
@@ -349,9 +350,9 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        if (GameModes.currentGameMode.equals(GameModes.gameMode.SNOWBALL)/* && event.getEntity() instanceof Snowball*/) {
+        if (ModeManager.currentGameMode.equals(ModeManager.GameMode.SNOWBALL)/* && event.getEntity() instanceof Snowball*/) {
             if (event.getEntity().getShooter() instanceof InventoryHolder) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.snowball), 1L);
+                Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.gameModeItems[ModeManager.GameMode.SNOWBALL.ordinal()]), 1L);
             }
         }
     }

@@ -45,6 +45,8 @@ public class Util {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
         itemMeta.setLore(Arrays.stream(lore).map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
+        itemMeta.setUnbreakable(true);
+
         itemStack.setItemMeta(itemMeta);
 
         return itemStack;

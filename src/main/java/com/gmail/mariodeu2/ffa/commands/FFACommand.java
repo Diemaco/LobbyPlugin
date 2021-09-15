@@ -1,6 +1,6 @@
 package com.gmail.mariodeu2.ffa.commands;
 
-import com.gmail.mariodeu2.ffa.GameModes;
+import com.gmail.mariodeu2.ffa.ModeManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -43,24 +43,25 @@ public class FFACommand implements CommandInterface {
 
         switch (args[0].toLowerCase()) {
             case "snowball" ->
-                    GameModes.changeGameMode(GameModes.gameMode.SNOWBALL);
+                    ModeManager.changeGameMode(ModeManager.GameMode.SNOWBALL);
             case "stick" ->
-                    GameModes.changeGameMode(GameModes.gameMode.STICK);
+                    ModeManager.changeGameMode(ModeManager.GameMode.STICK);
             case "nostick" ->
-                    GameModes.changeGameMode(GameModes.gameMode.NOSTICKS);
+                    ModeManager.changeGameMode(ModeManager.GameMode.NOSTICKS);
             case "shootie_shoot" ->
-                    GameModes.changeGameMode(GameModes.gameMode.SHOOTIE_SHOOT);
+                    ModeManager.changeGameMode(ModeManager.GameMode.SHOOTIE_SHOOT);
             case "notouch" ->
-                    GameModes.changeGameMode(GameModes.gameMode.CANT_TOUCH_THIS);
+                    ModeManager.changeGameMode(ModeManager.GameMode.CANT_TOUCH_THIS);
             case "give" -> {
                 if (args.length < 2) {
                     player.sendMessage(command_wrong.replace("{prefix}", prefix));
                     return false;
                 }
                 switch (args[1].toLowerCase()) {
-                    case "snowball" -> player.getInventory().addItem(itemCreator.snowball);
-                    case "stick" -> player.getInventory().addItem(itemCreator.stick);
-                    case "shootie_shoot" -> player.getInventory().addItem(itemCreator.shootie_shoot);
+                    case "snowball" -> player.getInventory().addItem(itemCreator.gameModeItems[ModeManager.GameMode.SNOWBALL.ordinal()]);
+                    case "stick" -> player.getInventory().addItem(itemCreator.gameModeItems[ModeManager.GameMode.STICK.ordinal()]);
+                    case "shootie_shoot" -> player.getInventory().addItem(itemCreator.gameModeItems[ModeManager.GameMode.SHOOTIE_SHOOT.ordinal()]);
+                    case "notouch" -> player.getInventory().addItem(itemCreator.hotSword);
                     default -> player.sendMessage(command_wrong.replace("{prefix}", prefix));
                 }
             }
