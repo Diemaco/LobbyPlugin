@@ -22,7 +22,7 @@ public class Settings {
     public static Integer damageTimeout = 140;
     public static Double leave_bonus = 0.25;
     public static String player_fall = "&aYou died!";
-    public static String player_lose = "&a&l{player}&r&a knocked you into lava!";
+    public static String player_lose = "&a&l{player}&r&a ";
     public static String player_win = "&aYou knocked &l{player}&r&a into lava!";
     public static String player_leave = "{prefix}&a&l{player}&r&a left the game so you received {leave_bonus} points";
     public static String command_wrong = "{prefix}&cWrong usage!";

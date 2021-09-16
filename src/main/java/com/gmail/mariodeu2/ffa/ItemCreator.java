@@ -13,7 +13,7 @@ public class ItemCreator {
 
     public final ItemStack[] gameModeItems = {
             Util.createItem(Material.STICK, 1, "&6&lKnockback Stick", new String[]{
-                    "&eShove it up everyone's ..."
+                    "&eShove it up everyone's #@!"
             }),
             new ItemStack(Material.AIR, 1),
             Util.createItem(Material.SNOWBALL, 16, "&6&lKnockback Snowball", new String[]{
@@ -67,7 +67,7 @@ public class ItemCreator {
 
         this.gameModeItems[ModeManager.GameMode.STICK.ordinal()].addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
         this.gameModeItems[ModeManager.GameMode.SNOWBALL.ordinal()].addUnsafeEnchantment(Enchantment.KNOCKBACK, 5);
-        this.hotSword.addEnchantment(Enchantment.FIRE_ASPECT, 10);
+        this.hotSword.addEnchantment(Enchantment.FIRE_ASPECT, 2);
 
         this.serverMenu.setItem(12, this.survivalMenuItem);
         this.serverMenu.setItem(14, this.creativeMenuItem);
