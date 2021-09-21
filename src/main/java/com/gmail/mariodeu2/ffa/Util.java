@@ -5,21 +5,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Settings.prefix;
 import static com.gmail.mariodeu2.ffa.Settings.stat;
+import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class Util {
 
     public static void connectPlayer(Player player, String serverName) {
-        ByteArrayOutputStream b = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(b);
+        var b = new ByteArrayOutputStream();
+        var out = new DataOutputStream(b);
 
         try {
             out.writeUTF("Connect");
@@ -40,15 +41,19 @@ public class Util {
     }
 
     public static ItemStack createItem(Material material, int amount, String displayName, String[] lore) {
-        ItemStack itemStack = new ItemStack(material, amount);
+        var item = new ItemStack(material, amount);
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
-        itemMeta.setLore(Arrays.stream(lore).map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
-        itemMeta.setUnbreakable(true);
+        var meta = item.getItemMeta();
+        meta.setDisplayName(translateAlternateColorCodes('&', displayName));
+        meta.setLore(Arrays.stream(lore).map(str -> translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
+        meta.setUnbreakable(true);
 
-        itemStack.setItemMeta(itemMeta);
+        item.setItemMeta(meta);
 
-        return itemStack;
+        return item;
+    }
+
+    public static ItemStack getItem(ModeManager.GameMode gameMode) {
+        return itemCreator.gameModeItems[gameMode.ordinal()];
     }
 }

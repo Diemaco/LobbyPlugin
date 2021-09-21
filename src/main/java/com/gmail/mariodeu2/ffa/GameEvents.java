@@ -2,6 +2,7 @@ package com.gmail.mariodeu2.ffa;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.destroystokyo.paper.Title;
+import com.gmail.mariodeu2.ffa.PlayerDataStorage.*;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.*;
@@ -28,7 +30,10 @@ import java.util.Map;
 
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Main.lock;
+import static com.gmail.mariodeu2.ffa.ModeManager.*;
+import static com.gmail.mariodeu2.ffa.PlayerDataStorage.*;
 import static com.gmail.mariodeu2.ffa.Settings.*;
+import static org.bukkit.ChatColor.*;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("ConstantConditions")
@@ -42,8 +47,8 @@ public class GameEvents implements Listener {
         Player player = event.getPlayer();
 
         // Create player settings if player settings haven't been created before
-        if (!PlayerDataStorage.playerExists(player)) {
-            PlayerDataStorage.createPlayerProfile(player);
+        if (!playerExists(player)) {
+            createPlayerProfile(player);
         }
 
         // Clear inventory
@@ -62,21 +67,21 @@ public class GameEvents implements Listener {
         player.teleport(lobbySpawnLocation, TeleportCause.PLUGIN);
 
         // Set join message
-        event.setJoinMessage(prefix.replace("FFA", "LOBBY") + ChatColor.GREEN + "" + ChatColor.BOLD + player.getName() + " joined the server!");
+        event.setJoinMessage(prefix.replace("FFA", "LOBBY") + GREEN + "" + BOLD + player.getName() + " joined the server!");
 
         // Give item depending on current game mode
-        player.getInventory().setItem(0, itemCreator.gameModeItems[ModeManager.currentGameMode.ordinal()]);
+        player.getInventory().setItem(0, itemCreator.gameModeItems[currentGameMode.ordinal()]);
 
         // Notify player if the 'Can't touch this' game mode is active
         player.sendTitle(new Title(
-                ChatColor.translateAlternateColorCodes('&', "&4&lCan't touch this!"),
-                ChatColor.translateAlternateColorCodes('&', "&4&l" + ModeManager.selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
+                translateAlternateColorCodes('&', "&4&lCan't touch this!"),
+                translateAlternateColorCodes('&', "&4&l" + selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
 
         // Deserialize the player's data and cache it
-        PlayerDataStorage.cachedPlayerData.put(player, PlayerDataStorage.PlayerData.deserialize(player));
+        cachedPlayerData.put(player, PlayerData.deserialize(player));
 
         // Set the player's xp level to their killstreak
-        player.setLevel(PlayerDataStorage.getPlayerKillstreak(player));
+        player.setLevel(getPlayerKillstreak(player));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -85,11 +90,11 @@ public class GameEvents implements Listener {
 
             for (Map.Entry<Player, attackedPlayer> set : playersAttacked.entrySet()) {
                 if(set.getValue().getAttacker().equals(event.getPlayer())) {
-                    PlayerDataStorage.PlayerData setPlayer = PlayerDataStorage.cachedPlayerData.get(set.getKey());
+                    var setPlayer = cachedPlayerData.get(set.getKey());
 
                     setPlayer.points += 0.25;
 
-                    PlayerDataStorage.cachedPlayerData.replace(set.getKey(), setPlayer);
+                    cachedPlayerData.replace(set.getKey(), setPlayer);
                     set.getKey().sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
                 }
             }
@@ -97,22 +102,20 @@ public class GameEvents implements Listener {
             Player tagger = playersAttacked.get(event.getPlayer()).getAttacker();
 
             if (tagger.getWorld() == world) {
-                PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
+                PlayerData setTagger = cachedPlayerData.get(tagger);
 
                 setTagger.points += 0.25;
 
-                PlayerDataStorage.cachedPlayerData.replace(tagger, setTagger);
+                cachedPlayerData.replace(tagger, setTagger);
                 tagger.sendMessage(player_leave.replace("{player}", event.getPlayer().getName()).replace("{leave_bonus}", leave_bonus.toString()).replace("{prefix}", prefix));
             }
 
             playersAttacked.remove(event.getPlayer());
         }
 
-        PlayerDataStorage.saveAndClear(event.getPlayer());
+        saveAndClear(event.getPlayer());
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            ModeManager.changeGameMode(ModeManager.GameMode.CANT_TOUCH_THIS);
-        }, 0L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> changeGameMode(ModeManager.GameMode.CANT_TOUCH_THIS), 0L);
 
         event.setQuitMessage("");
     }
@@ -129,7 +132,7 @@ public class GameEvents implements Listener {
 
             playersAttacked.remove(event.getPlayer());
         }
-        PlayerDataStorage.saveAndClear(event.getPlayer());
+        saveAndClear(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
@@ -141,17 +144,17 @@ public class GameEvents implements Listener {
         if (!(
                 player instanceof Player &&
                         attacker instanceof Player &&
-                        event.getCause() == EntityDamageEvent.DamageCause.ENTITY_ATTACK)) {
+                        event.getCause() == DamageCause.ENTITY_ATTACK)) {
             return;
         }
 
-        if(ModeManager.selectedPlayer == player) {
+        if(selectedPlayer == player) {
             event.setCancelled(true);
         }
 
         event.setDamage(0);
         if (!playersAttacked.containsKey(player)) {
-            attackedPlayer attackedPlayer = new attackedPlayer(player, attacker);
+            var attackedPlayer = new attackedPlayer(player, attacker);
 
             try {
                 lock.lock();
@@ -287,12 +290,12 @@ public class GameEvents implements Listener {
             player.sendActionBar(player_fall);
         }
 
-        if(player == ModeManager.selectedPlayer) {
-            ModeManager.changeGameMode(ModeManager.GameMode.STICK);
-            ModeManager.selectedPlayer = null;
+        if(player == selectedPlayer) {
+            selectedPlayer = null;
+            changeGameMode(ModeManager.GameMode.STICK);
 
             Bukkit.broadcastMessage(
-                    ChatColor.translateAlternateColorCodes('&', "&4&l'" + player.getName() + "'&4&l died and your sticks have been given back"));
+                    translateAlternateColorCodes('&', "&4&l'" + player.getName() + "'&4&l died and your sticks have been given back"));
         }
     }
 
@@ -305,7 +308,7 @@ public class GameEvents implements Listener {
         player.setFireTicks(0);
 
         // Get the cached playerdata
-        PlayerDataStorage.PlayerData cachedData = PlayerDataStorage.cachedPlayerData.get(player);
+        var cachedData = cachedPlayerData.get(player);
 
         // Increase the player's deaths
         cachedData.deaths += 1;
@@ -320,10 +323,10 @@ public class GameEvents implements Listener {
         player.sendActionBar(player_lose.replace("{player}", tagger.getName()));
 
         // If the player is online change his stats
-        if(tagger.isOnline() && PlayerDataStorage.cachedPlayerData.containsKey(tagger)) {
+        if(tagger.isOnline() && cachedPlayerData.containsKey(tagger)) {
 
             // Get the cached player data
-            PlayerDataStorage.PlayerData setTagger = PlayerDataStorage.cachedPlayerData.get(tagger);
+            var setTagger = cachedPlayerData.get(tagger);
 
             // Increase the tagger's kills by 1
             setTagger.kills += 1;
@@ -350,29 +353,31 @@ public class GameEvents implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
-        if (ModeManager.currentGameMode.equals(ModeManager.GameMode.SNOWBALL)/* && event.getEntity() instanceof Snowball*/) {
-            if (event.getEntity().getShooter() instanceof InventoryHolder) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, itemCreator.gameModeItems[ModeManager.GameMode.SNOWBALL.ordinal()]), 1L);
-            }
-        }
+        if (
+                currentGameMode == ModeManager.GameMode.SNOWBALL
+                && event.getEntity() instanceof Snowball
+                && event.getEntity().getShooter() instanceof InventoryHolder)
+            Bukkit.getScheduler().runTaskLater(plugin, () ->
+                    ((InventoryHolder) event.getEntity().getShooter()).getInventory().setItem(0, Util.getItem(currentGameMode)), 1L
+            );
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
-        /*if (!event.isSneaking()) {
+        if (!event.isSneaking()) {
             return;
-        }*/
+        }
+        event.setCancelled(true);
         event.getPlayer().setSneaking(false);
-        // event.setCancelled(true);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
         if (
                 event.getEntityType() != EntityType.PLAYER
-                || !(event.getCause() == EntityDamageEvent.DamageCause.FIRE
-                || event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK
-                || event.getCause() == EntityDamageEvent.DamageCause.LAVA)) {
+                || !(event.getCause() == DamageCause.FIRE
+                || event.getCause() == DamageCause.FIRE_TICK
+                || event.getCause() == DamageCause.LAVA)) {
             return;
         }
 
@@ -402,7 +407,7 @@ public class GameEvents implements Listener {
             if (counter > 0) {
                 counter--;
             } else {
-                EntityDamageEvent newEvent = new EntityDamageEvent(player, EntityDamageEvent.DamageCause.VOID, 0);
+                EntityDamageEvent newEvent = new EntityDamageEvent(player, DamageCause.VOID, 0);
                 player.setLastDamageCause(newEvent);
 
                 this.stop();

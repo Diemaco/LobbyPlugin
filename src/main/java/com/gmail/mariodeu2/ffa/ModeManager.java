@@ -2,12 +2,12 @@ package com.gmail.mariodeu2.ffa;
 
 import com.destroystokyo.paper.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.gmail.mariodeu2.ffa.Main.itemCreator;
+import static org.bukkit.ChatColor.translateAlternateColorCodes;
 
 public class ModeManager {
 
@@ -18,7 +18,7 @@ public class ModeManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().clear();
 
-            player.getInventory().setItem(8, itemCreator.gameModeItems[currentGameMode.ordinal()]);
+            player.getInventory().setItem(8, Util.getItem(currentGameMode));
             player.getInventory().setItem(8, itemCreator.compassMenuOpenItem);
         }
 
@@ -31,14 +31,13 @@ public class ModeManager {
             selectedPlayer = (Player) Bukkit.getOnlinePlayers().toArray()[ThreadLocalRandom.current().nextInt(Bukkit.getOnlinePlayers().size())];
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-
                 if(player == selectedPlayer) {
-                    selectedPlayer.sendTitle(new Title(ChatColor.translateAlternateColorCodes('&', "&4&lYou're it"), ChatColor.translateAlternateColorCodes('&', "&c&lYou can't be hit, everyone else can.")));
+                    selectedPlayer.sendTitle(new Title(translateAlternateColorCodes('&', "&4&lYou're it"), translateAlternateColorCodes('&', "&c&lYou can't be hit, everyone else can.")));
 
                 } else {
                     player.sendTitle(new Title(
-                            ChatColor.translateAlternateColorCodes('&', "&4&lCan't touch this!"),
-                            ChatColor.translateAlternateColorCodes('&', "&4&l" + selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
+                            translateAlternateColorCodes('&', "&4&lCan't touch this!"),
+                            translateAlternateColorCodes('&', "&4&l" + selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
                 }
             }
 
@@ -52,11 +51,11 @@ public class ModeManager {
     }
 
     public enum GameMode {
-        STICK,
-        NOSTICKS,
-        SNOWBALL,
-        SHOOTIE_SHOOT,
-        // HOT_POTATO,
-        CANT_TOUCH_THIS
+        STICK,              // Everyone has a stick
+        NOSTICKS,           // No one has a stick
+        SNOWBALL,           // Everyone has snowballs
+        SHOOTIE_SHOOT,      // Everyone has shootie shoots
+        CANT_TOUCH_THIS,    // One player has red armor and can't be hit. They also have a sword with fire aspect
+        // HOT_POTATO,      // Tnt run but with potatoes and lava
     }
 }
