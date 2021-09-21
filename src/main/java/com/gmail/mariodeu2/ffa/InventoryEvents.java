@@ -40,12 +40,8 @@ public class InventoryEvents implements Listener {
         }
 
         switch (event.getCurrentItem().getType()) {
-            case GRASS_BLOCK:
-                Util.connectPlayer(player, "survival");
-                break;
-            case DIAMOND_BLOCK:
-                Util.connectPlayer(player, "creative");
-                break;
+            case GRASS_BLOCK -> Util.connectPlayer(player, "survival");
+            case DIAMOND_BLOCK -> Util.connectPlayer(player, "creative");
         }
     }
 

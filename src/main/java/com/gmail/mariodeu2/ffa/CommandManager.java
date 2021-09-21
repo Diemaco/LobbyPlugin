@@ -42,7 +42,6 @@ public class CommandManager implements CommandExecutor, TabCompleter {
             }
         }
 
-        Bukkit.getLogger().severe("Oops");
         return false;
     }
 

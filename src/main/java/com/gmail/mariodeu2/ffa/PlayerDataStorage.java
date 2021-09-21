@@ -55,7 +55,7 @@ public class PlayerDataStorage {
             FileOutputStream fout;
             ObjectOutputStream oos;
             try {
-                String path = "/usr/home/diemaco/Minecraft/lobby/playerData/" + player.getUniqueId() + ".txt";
+                String path = "D:\\newservers\\lobby\\playerData\\" + player.getUniqueId() + ".txt";
 
                 File f = new File(path);
                 f.createNewFile();
@@ -74,7 +74,7 @@ public class PlayerDataStorage {
         public static PlayerData deserialize(Player player) {
             ObjectInputStream objectinputstream;
             try {
-                FileInputStream streamIn = new FileInputStream("/usr/home/diemaco/Minecraft/lobby/playerData/" + player.getUniqueId() + ".txt");
+                FileInputStream streamIn = new FileInputStream("D:\\newservers\\lobby\\playerData\\" + player.getUniqueId() + ".txt");
                 objectinputstream = new ObjectInputStream(streamIn);
 
                 return  (PlayerData) objectinputstream.readObject();
@@ -86,7 +86,7 @@ public class PlayerDataStorage {
         }
 
         public static boolean exists(Player player) {
-            return new File("/usr/home/diemaco/Minecraft/lobby/playerData/" + player.getUniqueId() + ".txt").exists();
+            return new File("D:\\newservers\\lobby\\playerData\\" + player.getUniqueId() + ".txt").exists();
         }
     }
 }

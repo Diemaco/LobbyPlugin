@@ -32,8 +32,10 @@ import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Main.lock;
 import static com.gmail.mariodeu2.ffa.ModeManager.*;
 import static com.gmail.mariodeu2.ffa.PlayerDataStorage.*;
+import static com.gmail.mariodeu2.ffa.ModeManager.selectedPlayer;
 import static com.gmail.mariodeu2.ffa.Settings.*;
 import static org.bukkit.ChatColor.*;
+import static org.bukkit.ChatColor.translateAlternateColorCodes;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("ConstantConditions")
@@ -73,9 +75,11 @@ public class GameEvents implements Listener {
         player.getInventory().setItem(0, itemCreator.gameModeItems[currentGameMode.ordinal()]);
 
         // Notify player if the 'Can't touch this' game mode is active
-        player.sendTitle(new Title(
-                translateAlternateColorCodes('&', "&4&lCan't touch this!"),
-                translateAlternateColorCodes('&', "&4&l" + selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
+        if (ModeManager.currentGameMode == ModeManager.GameMode.CANT_TOUCH_THIS) {
+            player.sendTitle(new Title(
+                    translateAlternateColorCodes('&', "&4&lCan't touch this!"),
+                    translateAlternateColorCodes('&', "&4&l" + selectedPlayer.getName() + "&4 has a weapon and can't be hit. The game is over when he dies"), 40, 80, 40));
+        }
 
         // Deserialize the player's data and cache it
         cachedPlayerData.put(player, PlayerData.deserialize(player));
@@ -407,7 +411,7 @@ public class GameEvents implements Listener {
             if (counter > 0) {
                 counter--;
             } else {
-                EntityDamageEvent newEvent = new EntityDamageEvent(player, DamageCause.VOID, 0);
+                var newEvent = new EntityDamageEvent(player, DamageCause.VOID, 0);
                 player.setLastDamageCause(newEvent);
 
                 this.stop();

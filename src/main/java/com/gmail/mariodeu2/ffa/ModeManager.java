@@ -15,10 +15,13 @@ public class ModeManager {
     public static Player selectedPlayer = null;
 
     public static void changeGameMode(GameMode newGameMode) {
+
+        currentGameMode = newGameMode;
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().clear();
 
-            player.getInventory().setItem(8, Util.getItem(currentGameMode));
+            player.getInventory().setItem(0, Util.getItem(currentGameMode));
             player.getInventory().setItem(8, itemCreator.compassMenuOpenItem);
         }
 

@@ -31,12 +31,12 @@ public class ItemCreator {
 
     public final ItemStack survivalMenuItem =
             createItem(Material.GRASS_BLOCK, 1, "&2&lSurvival", new String[]{
-                "&aModified Survival", "&aVersion: 1.17.1"
+                "&aModified Survival", "&aVersion: N/A"
             });
 
     public final ItemStack creativeMenuItem =
             createItem(Material.DIAMOND_BLOCK, 1, "&1&lCreative", new String[]{
-                "&9Creative Building", "&9Version: 1.17.1"
+                "&9Creative Building", "&9Version: N/A"
             });
 
     public final ItemStack compassMenuOpenItem =
