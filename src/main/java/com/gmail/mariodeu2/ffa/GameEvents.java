@@ -2,7 +2,6 @@ package com.gmail.mariodeu2.ffa;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import com.destroystokyo.paper.Title;
-import com.gmail.mariodeu2.ffa.PlayerDataStorage.*;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
@@ -32,10 +31,8 @@ import static com.gmail.mariodeu2.ffa.Main.itemCreator;
 import static com.gmail.mariodeu2.ffa.Main.lock;
 import static com.gmail.mariodeu2.ffa.ModeManager.*;
 import static com.gmail.mariodeu2.ffa.PlayerDataStorage.*;
-import static com.gmail.mariodeu2.ffa.ModeManager.selectedPlayer;
 import static com.gmail.mariodeu2.ffa.Settings.*;
 import static org.bukkit.ChatColor.*;
-import static org.bukkit.ChatColor.translateAlternateColorCodes;
 import static org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @SuppressWarnings("ConstantConditions")

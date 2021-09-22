@@ -1,7 +1,6 @@
 package com.gmail.mariodeu2.ffa;
 
 import com.gmail.mariodeu2.ffa.commands.CommandInterface;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;

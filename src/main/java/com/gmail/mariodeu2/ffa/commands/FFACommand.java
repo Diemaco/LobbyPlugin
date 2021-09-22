@@ -83,7 +83,7 @@ public class FFACommand implements CommandInterface {
             l.add("give");
         }
 
-        if (args.length == 2) {
+        if (args.length == 2 && "give".equals(args[1])) {
             l.add("snowball");
             l.add("stick");
             l.add("shootie_shoot");
