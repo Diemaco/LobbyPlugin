@@ -29,6 +29,8 @@ public class Main extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new InventoryEvents(), this);
         getServer().getPluginManager().registerEvents(new GameEvents(), this);
+
+
     }
 
     @Override
@@ -37,4 +39,6 @@ public class Main extends JavaPlugin {
             PlayerDataStorage.saveAndClear(player);
         }
     }
+
+
 }

@@ -1,9 +1,11 @@
 name: FFA
-version: 2.0
+version: 3.0
 api-version: 1.16
 main: com.gmail.mariodeu2.ffa.Main
-depend:
-  - AuthMe
+depend: [
+    AuthMe,
+    CommandApi
+]
 commands:
   ffa:
     description: FFA command
